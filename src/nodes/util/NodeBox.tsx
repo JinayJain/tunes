@@ -10,8 +10,8 @@ function NodeBox({
   return (
     <div
       className={clsx(
-        "border bg-white shadow-md px-4 py-2 rounded-md",
-        selected && "border-blue-500"
+        "border px-4 py-2 bg-gray-50",
+        selected && "border-sky-300"
       )}
     >
       {children}
