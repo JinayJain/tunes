@@ -11,6 +11,7 @@ import {
   OnConnect,
   applyNodeChanges,
   applyEdgeChanges,
+  OnEdgeUpdateFunc,
 } from "reactflow";
 import * as Tone from "tone";
 import { Connectable, Trigger } from "./nodes/util/connection";
@@ -29,9 +30,17 @@ export type RFState = {
   nodes: Node[];
   edges: Edge[];
   connectables: Map<string, Connectable>;
+  edgeUpdateSuccessful: boolean;
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
+  onEdgeUpdate: OnEdgeUpdateFunc;
+  onEdgeUpdateStart: (event: unknown, edge: Edge) => void;
+  onEdgeUpdateEnd: (event: unknown, edge: Edge) => void;
   onConnect: OnConnect;
+  modifyConnection: (
+    connector: Edge | Connection,
+    action: "connect" | "disconnect"
+  ) => void;
   setNodes: (nodes: Node[]) => void;
   setEdges: (edges: Edge[]) => void;
   register: (id: string, audioNode: Connectable) => void;
@@ -43,6 +52,7 @@ const useStore = create<RFState>((set, get) => ({
   nodes: initialNodes,
   edges: initialEdges,
   connectables: new Map(),
+  edgeUpdateSuccessful: false,
   onNodesChange: (changes: NodeChange[]) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),
@@ -53,33 +63,73 @@ const useStore = create<RFState>((set, get) => ({
       edges: applyEdgeChanges(changes, get().edges),
     });
   },
+  onEdgeUpdate: (oldEdge: Edge, newConnection: Connection) => {
+    get().modifyConnection(oldEdge, "disconnect");
+    get().modifyConnection(newConnection, "connect");
+    set({
+      edgeUpdateSuccessful: true,
+    });
+  },
+  onEdgeUpdateStart: () => {
+    set({
+      edgeUpdateSuccessful: false,
+    });
+  },
+  onEdgeUpdateEnd: (_, edge) => {
+    if (get().edgeUpdateSuccessful) {
+      return;
+    }
+
+    set({
+      edgeUpdateSuccessful: true,
+    });
+
+    get().modifyConnection(edge, "disconnect");
+  },
   onConnect: (connection: Connection) => {
-    const sourceAudioNode = get().connectables.get(
-      connection.sourceHandle ?? ""
+    get().modifyConnection(connection, "connect");
+  },
+  modifyConnection: (connector, action) => {
+    const sourceConnectable = get().connectables.get(
+      connector.sourceHandle || ""
     );
-    const targetAudioNode = get().connectables.get(
-      connection.targetHandle ?? ""
+    const targetConnectable = get().connectables.get(
+      connector.targetHandle || ""
     );
 
-    if (!sourceAudioNode || !targetAudioNode) {
+    if (!sourceConnectable || !targetConnectable) {
       return;
     }
 
     if (
-      sourceAudioNode instanceof Trigger &&
-      targetAudioNode instanceof Trigger
+      sourceConnectable instanceof Trigger &&
+      targetConnectable instanceof Trigger
     ) {
-      sourceAudioNode.connect(targetAudioNode);
+      if (action === "connect") {
+        sourceConnectable.connect(targetConnectable);
+      } else if (action === "disconnect") {
+        sourceConnectable.disconnect(targetConnectable);
+      }
     } else if (
-      sourceAudioNode instanceof Tone.ToneAudioNode &&
-      targetAudioNode instanceof Tone.ToneAudioNode
+      sourceConnectable instanceof Tone.ToneAudioNode &&
+      targetConnectable instanceof Tone.ToneAudioNode
     ) {
-      sourceAudioNode.connect(targetAudioNode);
+      if (action === "connect") {
+        sourceConnectable.connect(targetConnectable);
+      } else if (action === "disconnect") {
+        sourceConnectable.disconnect(targetConnectable);
+      }
     }
 
-    set({
-      edges: addEdge(connection, get().edges),
-    });
+    if (action === "connect") {
+      set({
+        edges: addEdge(connector, get().edges),
+      });
+    } else if (action === "disconnect" && "id" in connector) {
+      set({
+        edges: get().edges.filter((edge) => edge.id !== connector.id),
+      });
+    }
   },
   setNodes: (nodes: Node[]) => {
     set({ nodes });

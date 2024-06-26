@@ -18,13 +18,23 @@ const selector = (state: RFState) => ({
   onNodesChange: state.onNodesChange,
   onEdgesChange: state.onEdgesChange,
   onConnect: state.onConnect,
+  onEdgeUpdate: state.onEdgeUpdate,
+  onEdgeUpdateStart: state.onEdgeUpdateStart,
+  onEdgeUpdateEnd: state.onEdgeUpdateEnd,
 });
 
 function App() {
   const { screenToFlowPosition } = useReactFlow();
-  const { nodes, edges, onNodesChange, onEdgesChange, onConnect } = useStore(
-    useShallow(selector)
-  );
+  const {
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+    onEdgeUpdate,
+    onEdgeUpdateStart,
+    onEdgeUpdateEnd,
+  } = useStore(useShallow(selector));
 
   const onDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -69,6 +79,9 @@ function App() {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onEdgeUpdate={onEdgeUpdate}
+          onEdgeUpdateStart={onEdgeUpdateStart}
+          onEdgeUpdateEnd={onEdgeUpdateEnd}
           onConnect={onConnect}
           fitView
         >

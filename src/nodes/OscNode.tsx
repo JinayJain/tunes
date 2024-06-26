@@ -38,7 +38,18 @@ function OscNode({ id, selected }: NodeProps) {
             min={20}
             max={5000}
           />
-          <span className="text-xs min-w-[8ch]">{freq} Hz</span>
+
+          <input
+            type="number"
+            className="nodrag border"
+            value={freq}
+            onChange={(e) => {
+              setFreq(parseInt(e.target.value));
+            }}
+            min={20}
+            max={5000}
+          />
+          <span className="text-xs min-w-[8ch]">Hz</span>
         </div>
         <div className="flex items-center space-x-2">
           <label className="text-xs">Type:</label>
