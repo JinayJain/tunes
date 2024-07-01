@@ -1,30 +1,40 @@
-import { useRef } from "react";
-import { NodeProps, Handle, Position } from "reactflow";
-import NodeBox from "./util/NodeBox";
+import { Handle, NodeProps, Position } from "reactflow";
+import { NodeBox, NodeBody } from "./util/Node";
+import { useCallback } from "react";
 import useHandle from "./util/useHandle";
-import { Trigger } from "./util/connection";
+import { useStore } from "../store";
+import { useShallow } from "zustand/react/shallow";
+import { Button, ButtonData, ButtonConnection } from "../graph/button";
 
-function ButtonNode({ id, selected }: NodeProps) {
-  const trigger = useRef<Trigger | null>(null);
-  if (!trigger.current) {
-    trigger.current = new Trigger();
-  }
-  const outputHandleId = useHandle(id, "output", trigger.current);
+function ButtonNode({ id, selected }: NodeProps<ButtonData>) {
+  const triggerHandleId = useHandle(id, ButtonConnection.Trigger);
+  const graphNode = useStore(
+    useShallow((state) => state.getGraphNode<Button>(id))
+  );
+
+  const onMouseDown = useCallback(() => {
+    graphNode.trigger(true);
+  }, [graphNode]);
+
+  const onMouseUp = useCallback(() => {
+    graphNode.trigger(false);
+  }, [graphNode]);
 
   return (
     <>
+      <Handle type="source" position={Position.Right} id={triggerHandleId} />
       <NodeBox selected={selected}>
-        <h1 className="text-lg">Button</h1>
-        <button
-          onMouseDown={() => trigger.current?.trigger(true)}
-          onMouseUp={() => trigger.current?.trigger(false)}
-          onMouseLeave={() => trigger.current?.trigger(false)}
-          className="nodrag px-2 py-1 border active:bg-gray-200 hover:bg-gray-100"
-        >
-          Press
-        </button>
+        <NodeBody>
+          <button
+            className="bg-blue-200 hover:bg-blue-300 active:bg-blue-400 px-2 py-1 nodrag"
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseUp}
+          >
+            Press
+          </button>
+        </NodeBody>
       </NodeBox>
-      <Handle type="source" position={Position.Right} id={outputHandleId} />
     </>
   );
 }

@@ -1,0 +1,37 @@
+import * as Tone from "tone";
+import { GraphNode } from ".";
+
+export interface OscillatorData {
+  type: Tone.ToneOscillatorType;
+  frequency: number;
+}
+
+export const defaultOscillatorData: OscillatorData = {
+  type: "sine",
+  frequency: 440,
+};
+
+export enum OscillatorConnection {
+  AudioOut = "audioOut",
+  Frequency = "frequency",
+}
+
+export class Oscillator extends GraphNode<OscillatorData> {
+  private oscillator: Tone.Oscillator;
+
+  constructor(data: OscillatorData) {
+    super();
+    this.oscillator = new Tone.Oscillator(data.frequency, data.type).start();
+
+    this.connectables.set(OscillatorConnection.AudioOut, this.oscillator);
+  }
+
+  public dispose() {
+    this.oscillator.dispose();
+  }
+
+  public update(data: OscillatorData) {
+    this.oscillator.type = data.type;
+    this.oscillator.frequency.value = data.frequency;
+  }
+}

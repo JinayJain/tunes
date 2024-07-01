@@ -1,37 +1,50 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import NodeBox from "./util/NodeBox";
-import { useRef, useState } from "react";
-import * as Tone from "tone";
+import { NodeBody, NodeBox, NodeTitle } from "./util/Node";
 import useHandle from "./util/useHandle";
+import * as Tone from "tone";
+import { useStore } from "../store";
+import { SinkConnection, SinkData } from "../graph/sink";
+import { useShallow } from "zustand/react/shallow";
 
-function SinkNode({ id, selected }: NodeProps) {
-  const [started, setStarted] = useState(false);
-  const destinationRef = useRef<Tone.ToneAudioNode | null>(null);
-
-  if (destinationRef.current === null) {
-    destinationRef.current = Tone.getDestination();
-  }
-
-  const destinationHandleId = useHandle(id, "input", destinationRef.current);
-
-  const onStart = async () => {
-    await Tone.start();
-    setStarted(true);
-  };
+function SinkNode({ id, selected, data: { volume } }: NodeProps<SinkData>) {
+  const destinationHandleId = useHandle(id, SinkConnection.AudioIn);
+  const updateNodeData = useStore(
+    useShallow((state) => state.updateNodeData<SinkData>)
+  );
 
   return (
     <>
       <Handle type="target" position={Position.Left} id={destinationHandleId} />
       <NodeBox selected={selected}>
-        <h1 className="text-lg">Output</h1>
-
-        <button
-          onClick={onStart}
-          disabled={started}
-          className="nodrag px-2 py-1 border active:bg-gray-200 hover:bg-gray-100 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:text-gray-500"
-        >
-          Unmute
-        </button>
+        <NodeTitle>Speaker</NodeTitle>
+        <NodeBody>
+          <div className="flex items-center space-x-2">
+            <label>Volume:</label>
+            <input
+              type="range"
+              className="nodrag border"
+              value={Tone.dbToGain(volume)}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value);
+                if (!isNaN(value)) {
+                  updateNodeData(id, { volume: Tone.gainToDb(value) });
+                }
+              }}
+              min={0}
+              max={1}
+              step={0.01}
+            />
+            <span className="min-w-[4ch]">
+              {Math.round(Tone.dbToGain(volume) * 100)}%
+            </span>
+          </div>
+          <button
+            className="mt-2 text-sm border px-2 py-1 hover:bg-gray-100 active:bg-gray-200"
+            onClick={() => Tone.start()}
+          >
+            Enable Audio
+          </button>
+        </NodeBody>
       </NodeBox>
     </>
   );

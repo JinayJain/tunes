@@ -1,117 +1,95 @@
-import { useState, useEffect, useRef, useCallback } from "react";
 import { Handle, NodeProps, Position } from "reactflow";
-import NodeBox from "./util/NodeBox";
-import clsx from "clsx";
-import { useHandles } from "./util/useHandle";
-import { Trigger } from "./util/connection";
+import { Sequencer, SequencerData } from "../graph/sequencer";
+import { NodeBody, NodeBox, NodeTitle } from "./util/Node";
+import useHandle from "./util/useHandle";
+import { ButtonConnection } from "../graph/button";
+import { useShallow } from "zustand/react/shallow";
+import { useStore } from "../store";
+import { useCallback, useState } from "react";
 import { useTimer } from "react-use-precision-timer";
+import clsx from "clsx";
 
 function SequencerNode({
   id,
   selected,
-  data,
-}: NodeProps & { data: { width: number; height: number } }) {
-  const { width, height } = data;
-  const [pattern, setPattern] = useState<boolean[][]>(
-    Array.from({ length: height }, () =>
-      Array.from({ length: width }, () => false)
-    )
-  );
+  data: { steps },
+}: NodeProps<SequencerData>) {
+  const triggerHandleId = useHandle(id, ButtonConnection.Trigger);
   const [currentStep, setCurrentStep] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-
-  const triggers = useRef(Array.from({ length: height }, () => new Trigger()));
-  const handles = useHandles(id, triggers.current);
-
-  const triggerStep = useCallback(
-    (step: number, on: boolean) => {
-      pattern.forEach((row, i) => {
-        if (row[step]) {
-          triggers.current[i].trigger(on);
-        }
-      });
-    },
-    [pattern]
+  const updateNodeData = useStore(
+    useShallow((state) => state.updateNodeData<SequencerData>)
+  );
+  const graphNode = useStore(
+    useShallow((state) => state.getGraphNode<Sequencer>(id))
   );
 
-  const onTimer = useCallback(() => {
-    const nextStep = (currentStep + 1) % width;
-    triggerStep(currentStep, false);
-    triggerStep(nextStep, true);
-
-    setCurrentStep((prevStep) => (prevStep + 1) % width);
-  }, [currentStep, triggerStep, width]);
-
-  const clock = useTimer({ delay: 100 }, onTimer);
-
-  useEffect(() => {
-    if (isRunning) {
-      clock.start();
-      triggerStep(currentStep, true);
-    } else {
-      triggerStep(currentStep, false);
-      setCurrentStep(0);
-      clock.stop();
+  const onTimerTick = useCallback(() => {
+    const nextStep = (currentStep + 1) % steps.length;
+    if (steps[currentStep]) {
+      graphNode.trigger(false);
     }
-  }, [isRunning, clock, triggerStep, currentStep]);
+    if (steps[nextStep]) {
+      graphNode.trigger(true);
+    }
+    setCurrentStep(nextStep);
+  }, [currentStep, steps, graphNode]);
+
+  const timer = useTimer(
+    {
+      delay: 250,
+    },
+    onTimerTick
+  );
+
+  const onStepClick = useCallback(
+    (index: number) => {
+      const newSteps = [...steps];
+      newSteps[index] = !newSteps[index];
+      updateNodeData(id, { steps: newSteps });
+    },
+    [id, steps, updateNodeData]
+  );
+
+  const onTimerToggle = useCallback(() => {
+    if (timer.isRunning()) {
+      timer.stop();
+      setCurrentStep(0);
+      graphNode.trigger(false);
+    } else {
+      timer.start();
+      if (steps[currentStep]) {
+        graphNode.trigger(true);
+      }
+    }
+  }, [currentStep, graphNode, steps, timer]);
 
   return (
     <>
-      <Handle type="target" position={Position.Left} />
+      <Handle type="source" position={Position.Right} id={triggerHandleId} />
       <NodeBox selected={selected}>
-        <h1 className="text-lg">Sequencer</h1>
-
-        <div className="flex items-center space-x-2 mb-2">
-          <button
-            onClick={() => setIsRunning((prev) => !prev)}
-            className="px-2 py-1 border active:bg-gray-200 hover:bg-gray-100"
-          >
-            {isRunning ? "Stop" : "Start"}
-          </button>
-        </div>
-
-        <div
-          className={`grid nodrag`}
-          style={{ gridTemplateColumns: `repeat(${width}, minmax(0, 1fr))` }}
-        >
-          {pattern?.map((row, i) =>
-            row.map((cell, j) => (
+        <NodeTitle>Sequencer</NodeTitle>
+        <NodeBody>
+          <div className="flex space-x-2">
+            {steps.map((step, index) => (
               <button
-                key={`${i}-${j}`}
+                key={index}
                 className={clsx(
-                  "flex items-center justify-center w-6 h-6 border",
-                  {
-                    "bg-gray-200 hover:bg-gray-300": j === currentStep && !cell,
-                    "bg-teal-500 hover:bg-teal-600": cell && j !== currentStep,
-                    "bg-yellow-500 hover:bg-yellow-600":
-                      j === currentStep && cell,
-                    "bg-white hover:bg-gray-100": j !== currentStep && !cell,
-                  }
+                  step ? "bg-gray-800" : "bg-gray-200",
+                  index === currentStep && "border-2 border-teal-500",
+                  "h-8 w-8 rounded-md nodrag"
                 )}
-                aria-label={`Step ${i}-${j}`}
-                onClick={() => {
-                  setPattern((prev) => {
-                    const newPattern = [...prev];
-                    newPattern[i][j] = !cell;
-                    return newPattern;
-                  });
-                }}
+                onClick={() => onStepClick(index)}
               ></button>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+          <button
+            onClick={onTimerToggle}
+            className="mt-2 px-2 py-1 text-sm border rounded-md hover:bg-gray-200"
+          >
+            {timer.isRunning() ? "Stop" : "Start"}
+          </button>
+        </NodeBody>
       </NodeBox>
-      <div className="flex flex-col">
-        {handles.map((handle, i) => (
-          <Handle
-            key={i}
-            type="source"
-            position={Position.Right}
-            id={handle}
-            style={{ top: `${(i / height) * 100}%` }}
-          />
-        ))}
-      </div>
     </>
   );
 }

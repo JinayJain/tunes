@@ -1,127 +1,111 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import NodeBox from "./util/NodeBox";
-import { useEffect, useRef, useState } from "react";
-import * as Tone from "tone";
+import { NodeBox, NodeBody, NodeTitle } from "./util/Node";
+import { useCallback } from "react";
 import useHandle from "./util/useHandle";
-import { Trigger } from "./util/connection";
+import { useStore } from "../store";
+import { useShallow } from "zustand/react/shallow";
+import { Envelope, EnvelopeData, EnvelopeConnection } from "../graph/envelope";
 
-function EnvelopeNode({ id, selected }: NodeProps) {
-  const [attack, setAttack] = useState(0.1);
-  const [decay, setDecay] = useState(0.1);
-  const [sustain, setSustain] = useState(0.7);
-  const [release, setRelease] = useState(0.1);
+function EnvelopeNode({
+  id,
+  selected,
+  data: { attack, decay, release, sustain },
+}: NodeProps<EnvelopeData>) {
+  const inputHandleId = useHandle(id, EnvelopeConnection.AudioIn);
+  const outputHandleId = useHandle(id, EnvelopeConnection.AudioOut);
+  const triggerHandleId = useHandle(id, EnvelopeConnection.Trigger);
+  const updateNodeData = useStore(
+    useShallow((state) => state.updateNodeData<EnvelopeData>)
+  );
+  const graphNode = useStore(
+    useShallow((state) => state.getGraphNode<Envelope>(id))
+  );
 
-  const envelope = useRef<Tone.AmplitudeEnvelope | null>(null);
-  if (!envelope.current) {
-    envelope.current = new Tone.AmplitudeEnvelope({
-      attack,
-      decay,
-      sustain,
-      release,
-    });
-  }
+  const handleChange =
+    (field: keyof EnvelopeData) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = parseFloat(e.target.value);
+      if (!isNaN(value)) {
+        updateNodeData(id, { [field]: value });
+      }
+    };
 
-  const onTrigger = (on: boolean) => {
-    console.log("trigger", on);
-    if (on) {
-      envelope.current?.triggerAttack();
-    } else {
-      envelope.current?.triggerRelease();
-    }
-  };
-
-  const trigger = useRef<Trigger | null>(null);
-  if (!trigger.current) {
-    trigger.current = new Trigger(onTrigger);
-  }
-
-  const inputHandleId = useHandle(id, "input", envelope.current.input);
-  const outputHandleId = useHandle(id, "output", envelope.current.output);
-  const triggerHandleId = useHandle(id, "trigger", trigger.current);
-
-  useEffect(() => {
-    if (envelope.current) {
-      envelope.current.attack = attack;
-      envelope.current.decay = decay;
-      envelope.current.sustain = sustain;
-      envelope.current.release = release;
-    }
-  }, [attack, decay, sustain, release]);
-
-  const onAttack = () => {
-    envelope.current?.triggerAttack();
-  };
-
-  const onRelease = () => {
-    envelope.current?.triggerRelease();
-  };
+  const onAttack = useCallback(() => {
+    graphNode.trigger(true);
+  }, [graphNode]);
+  const onRelease = useCallback(() => {
+    graphNode.trigger(false);
+  }, [graphNode]);
 
   return (
     <>
       <Handle type="target" position={Position.Left} id={inputHandleId} />
       <Handle type="target" position={Position.Top} id={triggerHandleId} />
       <NodeBox selected={selected}>
-        <h1 className="text-lg">Envelope</h1>
-        <div className="flex items-center space-x-2">
-          <label className="text-xs">Attack:</label>
-          <input
-            type="range"
-            className="nodrag border"
-            value={attack}
-            onChange={(e) => setAttack(parseFloat(e.target.value))}
-            min={0.01}
-            max={2}
-            step={0.01}
-          />
-          <span className="text-xs min-w-[8ch]">{attack}s</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <label className="text-xs">Decay:</label>
-          <input
-            type="range"
-            className="nodrag border"
-            value={decay}
-            onChange={(e) => setDecay(parseFloat(e.target.value))}
-            min={0.01}
-            max={2}
-            step={0.01}
-          />
-          <span className="text-xs min-w-[8ch]">{decay}s</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <label className="text-xs">Sustain:</label>
-          <input
-            type="range"
-            className="nodrag border"
-            value={sustain}
-            onChange={(e) => setSustain(parseFloat(e.target.value))}
-            min={0}
-            max={1}
-            step={0.01}
-          />
-          <span className="text-xs min-w-[8ch]">{sustain}</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <label className="text-xs">Release:</label>
-          <input
-            type="range"
-            className="nodrag border"
-            value={release}
-            onChange={(e) => setRelease(parseFloat(e.target.value))}
-            min={0.01}
-            max={2}
-            step={0.01}
-          />
-          <span className="text-xs min-w-[8ch]">{release}s</span>
-        </div>
-        <button
-          className="bg-blue-200 hover:bg-blue-300 active:bg-blue-400 px-2 py-1 nodrag"
-          onMouseDown={onAttack}
-          onMouseUp={onRelease}
-          onMouseLeave={onRelease}
-        >
-          Trigger
-        </button>
+        <NodeTitle>Envelope</NodeTitle>
+        <NodeBody>
+          {" "}
+          {[
+            {
+              label: "Attack",
+              value: attack,
+              min: 0.01,
+              max: 2,
+              step: 0.01,
+              unit: "s",
+            },
+            {
+              label: "Decay",
+              value: decay,
+              min: 0.01,
+              max: 2,
+              step: 0.01,
+              unit: "s",
+            },
+            {
+              label: "Sustain",
+              value: sustain,
+              min: 0,
+              max: 1,
+              step: 0.01,
+              unit: "",
+            },
+            {
+              label: "Release",
+              value: release,
+              min: 0.01,
+              max: 2,
+              step: 0.01,
+              unit: "s",
+            },
+          ].map(({ label, value, min, max, step, unit }) => (
+            <div key={label} className="flex items-center space-x-2">
+              <label>{label}:</label>
+              <input
+                type="range"
+                className="nodrag border"
+                value={value}
+                onChange={handleChange(
+                  label.toLowerCase() as keyof EnvelopeData
+                )}
+                min={min}
+                max={max}
+                step={step}
+              />
+              <span className="min-w-[8ch]">
+                {value}
+                {unit}
+              </span>
+            </div>
+          ))}
+          <button
+            className="bg-blue-200 hover:bg-blue-300 active:bg-blue-400 px-2 py-1 nodrag"
+            onMouseDown={onAttack}
+            onMouseUp={onRelease}
+            onMouseLeave={onRelease}
+          >
+            Trigger
+          </button>
+        </NodeBody>
       </NodeBox>
       <Handle type="source" position={Position.Right} id={outputHandleId} />
     </>
