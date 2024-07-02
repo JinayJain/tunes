@@ -16,6 +16,8 @@ import EnvelopeNode from "./nodes/EnvelopeNode";
 import ButtonNode from "./nodes/ButtonNode";
 import OscillatorNode from "./nodes/OscillatorNode";
 import SequencerNode from "./nodes/SequencerNode";
+import LFONode from "./nodes/LFONode";
+import MathNode from "./nodes/MathNode";
 
 const selector = (state: Store) => ({
   nodes: state.rfNodes,
@@ -56,6 +58,8 @@ function App() {
       [NodeTypes.Button]: ButtonNode,
       [NodeTypes.Oscillator]: OscillatorNode,
       [NodeTypes.Sequencer]: SequencerNode,
+      [NodeTypes.LFO]: LFONode,
+      [NodeTypes.Math]: MathNode,
     }),
     []
   );

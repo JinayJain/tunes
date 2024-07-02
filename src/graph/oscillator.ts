@@ -11,6 +11,11 @@ export const defaultOscillatorData: OscillatorData = {
   frequency: 440,
 };
 
+export const defaultLfoData: OscillatorData = {
+  type: "sine",
+  frequency: 1,
+};
+
 export enum OscillatorConnection {
   AudioOut = "audioOut",
   Frequency = "frequency",
@@ -24,6 +29,10 @@ export class Oscillator extends GraphNode<OscillatorData> {
     this.oscillator = new Tone.Oscillator(data.frequency, data.type).start();
 
     this.connectables.set(OscillatorConnection.AudioOut, this.oscillator);
+    this.connectables.set(
+      OscillatorConnection.Frequency,
+      this.oscillator.frequency
+    );
   }
 
   public dispose() {

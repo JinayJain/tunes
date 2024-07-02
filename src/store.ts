@@ -16,6 +16,7 @@ import { create } from "zustand";
 import { GraphNode, connect, disconnect } from "./graph";
 import { defaultEnvelopeData, Envelope, EnvelopeData } from "./graph/envelope";
 import {
+  defaultLfoData,
   defaultOscillatorData,
   Oscillator,
   OscillatorData,
@@ -23,6 +24,7 @@ import {
 import { defaultSinkData, Sink, SinkData } from "./graph/sink";
 import { Button } from "./graph/button";
 import { Sequencer, defaultSequencerData } from "./graph/sequencer";
+import { Math, MathData, defaultMathData } from "./graph/math";
 
 type StoreData = {
   rfNodes: Node[];
@@ -59,6 +61,8 @@ enum NodeTypes {
   Envelope = "envelope",
   Button = "button",
   Sequencer = "sequencer",
+  LFO = "lfo",
+  Math = "math",
 }
 
 export type NodeInfo = {
@@ -98,6 +102,18 @@ export const nodeDefinitions: Record<NodeTypes, NodeInfo> = {
     label: "Sequencer",
     defaultData: defaultSequencerData,
     createGraphNode: () => new Sequencer(),
+  },
+  [NodeTypes.LFO]: {
+    type: NodeTypes.LFO,
+    label: "LFO",
+    defaultData: defaultLfoData,
+    createGraphNode: (data) => new Oscillator(data as OscillatorData),
+  },
+  [NodeTypes.Math]: {
+    type: NodeTypes.Math,
+    label: "Math",
+    defaultData: defaultMathData,
+    createGraphNode: (data) => new Math(data as MathData),
   },
 };
 
