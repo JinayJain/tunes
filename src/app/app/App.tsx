@@ -12,14 +12,14 @@ import "reactflow/dist/style.css";
 import { useShallow } from "zustand/react/shallow";
 import { useDraggable, DndContext, DragEndEvent } from "@dnd-kit/core";
 import { useCallback, useEffect, useMemo } from "react";
-import { NodeTypes, Store, nodeDefinitions, useStore } from "./store";
-import SinkNode from "./nodes/SinkNode";
-import EnvelopeNode from "./nodes/EnvelopeNode";
-import ButtonNode from "./nodes/ButtonNode";
-import OscillatorNode from "./nodes/OscillatorNode";
-import SequencerNode from "./nodes/SequencerNode";
-import LFONode from "./nodes/LFONode";
-import MathNode from "./nodes/MathNode";
+import { NodeTypes, Store, nodeDefinitions, useStore } from "../../store";
+import SinkNode from "../../nodes/SinkNode";
+import EnvelopeNode from "../../nodes/EnvelopeNode";
+import ButtonNode from "../../nodes/ButtonNode";
+import OscillatorNode from "../../nodes/OscillatorNode";
+import SequencerNode from "../../nodes/SequencerNode";
+import LFONode from "../../nodes/LFONode";
+import MathNode from "../../nodes/MathNode";
 import * as Tone from "tone";
 import React from "react";
 
@@ -38,6 +38,23 @@ const selector = (state: Store) => ({
 });
 
 const LOCAL_STORE_KEY = "savedFlow";
+
+function Draggable(props: { children: React.ReactNode; id: string }) {
+  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+    id: props.id,
+  });
+  const style = transform
+    ? {
+        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+      }
+    : undefined;
+
+  return (
+    <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
+      {props.children}
+    </button>
+  );
+}
 
 function App() {
   const { screenToFlowPosition, toObject, setViewport } = useReactFlow();
@@ -192,23 +209,6 @@ function App() {
         </ReactFlow>
       </DndContext>
     </div>
-  );
-}
-
-function Draggable(props: { children: React.ReactNode; id: string }) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: props.id,
-  });
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
-
-  return (
-    <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
-      {props.children}
-    </button>
   );
 }
 

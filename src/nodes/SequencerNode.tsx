@@ -1,8 +1,8 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { SequencerGraphNode, SequencerData } from "../graph/sequencer";
+import { SequencerGraphNode, SequencerData } from "@/graph/sequencer";
 import { NodeBody, NodeBox, NodeTitle } from "./util/Node";
 import useHandle from "./util/useHandle";
-import { ButtonConnection } from "../graph/button";
+import { ButtonConnection } from "@/graph/button";
 import { useShallow } from "zustand/react/shallow";
 import { useStore } from "../store";
 import { useCallback, useState } from "react";
