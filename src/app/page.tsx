@@ -16,11 +16,6 @@ function Home() {
           </button>
         </a>
       </div>
-      {/* <div className="flex-1 p-4 border">
-        <div className="h-full bg-gray-100">
-          <p>demo here</p>
-        </div>
-      </div> */}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { GraphNode, Trigger } from ".";
+import { GraphNode, Trigger } from "../util/graph";
 
 export interface ButtonData {}
 

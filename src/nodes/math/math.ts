@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { GraphNode } from ".";
+import { GraphNode } from "../util/graph";
 
 export enum MathOperation {
   Add = "add",

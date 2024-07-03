@@ -1,9 +1,9 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { NodeBody, NodeBox, NodeTitle } from "./util/Node";
-import useHandle from "./util/useHandle";
+import { NodeBody, NodeBox, NodeTitle } from "../util/Node";
+import useHandle from "../util/useHandle";
 import * as Tone from "tone";
-import { useStore } from "../store";
-import { SinkConnection, SinkData } from "../graph/sink";
+import { useStore } from "../../store";
+import { SinkConnection, SinkData } from "./sink";
 import { useShallow } from "zustand/react/shallow";
 import React from "react";
 

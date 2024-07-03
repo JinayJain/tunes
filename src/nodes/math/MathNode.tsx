@@ -1,10 +1,10 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { NodeBody, NodeBox, NodeTitle } from "./util/Node";
-import useHandle from "./util/useHandle";
-import { useStore } from "../store";
+import { NodeBody, NodeBox, NodeTitle } from "../util/Node";
+import useHandle from "../util/useHandle";
+import { useStore } from "../../store";
 import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { MathData, MathOperation, MathConnection } from "../graph/math";
+import { MathData, MathOperation, MathConnection } from "./math";
 import React from "react";
 
 function MathNode({

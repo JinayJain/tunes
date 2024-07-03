@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { GraphNode, Trigger } from ".";
+import { GraphNode, Trigger } from "../util/graph";
 
 export type EnvelopeData = {
   attack: number;

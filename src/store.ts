@@ -13,22 +13,8 @@ import {
   OnEdgeUpdateFunc,
 } from "reactflow";
 import { create } from "zustand";
-import { GraphNode, connect, disconnect } from "./graph";
-import {
-  defaultEnvelopeData,
-  EnvelopeGraphNode,
-  EnvelopeData,
-} from "./graph/envelope";
-import {
-  defaultLfoData,
-  defaultOscillatorData,
-  OscillatorGraphNode,
-  OscillatorData,
-} from "./graph/oscillator";
-import { defaultSinkData, SinkGraphNode, SinkData } from "./graph/sink";
-import { ButtonGraphNode } from "./graph/button";
-import { SequencerGraphNode, defaultSequencerData } from "./graph/sequencer";
-import { MathGraphNode, MathData, defaultMathData } from "./graph/math";
+import { GraphNode, connect, disconnect } from "./nodes/util/graph";
+import { NodeType, NODE_DEFINITIONS } from "./nodes";
 
 type StoreData = {
   rfNodes: Node[];
@@ -59,71 +45,9 @@ type Store = StoreData & StoreActions;
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
 
-enum NodeTypes {
-  Oscillator = "oscillator",
-  Sink = "sink",
-  Envelope = "envelope",
-  Button = "button",
-  Sequencer = "sequencer",
-  LFO = "lfo",
-  Math = "math",
-}
-
-type NodeInfo = {
-  type: NodeTypes;
-  label: string;
-  defaultData: unknown;
-  createGraphNode: (data: unknown) => GraphNode<unknown>;
-};
-
-const nodeDefinitions: Record<NodeTypes, NodeInfo> = {
-  [NodeTypes.Oscillator]: {
-    type: NodeTypes.Oscillator,
-    label: "Oscillator",
-    defaultData: defaultOscillatorData,
-    createGraphNode: (data) => new OscillatorGraphNode(data as OscillatorData),
-  },
-  [NodeTypes.Sink]: {
-    type: NodeTypes.Sink,
-    label: "Speaker",
-    defaultData: defaultSinkData,
-    createGraphNode: (data) => new SinkGraphNode(data as SinkData),
-  },
-  [NodeTypes.Envelope]: {
-    type: NodeTypes.Envelope,
-    label: "Envelope",
-    defaultData: defaultEnvelopeData,
-    createGraphNode: (data) => new EnvelopeGraphNode(data as EnvelopeData),
-  },
-  [NodeTypes.Button]: {
-    type: NodeTypes.Button,
-    label: "Button",
-    defaultData: {},
-    createGraphNode: () => new ButtonGraphNode(),
-  },
-  [NodeTypes.Sequencer]: {
-    type: NodeTypes.Sequencer,
-    label: "Sequencer",
-    defaultData: defaultSequencerData,
-    createGraphNode: () => new SequencerGraphNode(),
-  },
-  [NodeTypes.LFO]: {
-    type: NodeTypes.LFO,
-    label: "LFO",
-    defaultData: defaultLfoData,
-    createGraphNode: (data) => new OscillatorGraphNode(data as OscillatorData),
-  },
-  [NodeTypes.Math]: {
-    type: NodeTypes.Math,
-    label: "Math",
-    defaultData: defaultMathData,
-    createGraphNode: (data) => new MathGraphNode(data as MathData),
-  },
-};
-
 const createFlowNode = <TData>(
   id: string,
-  type: NodeTypes,
+  type: NodeType,
   position: XYPosition,
   data: TData
 ): Node => ({
@@ -155,7 +79,7 @@ const useStore = create<Store>((set, get) => ({
     });
   },
   addNode: (type, position) => {
-    const nodeInfo = nodeDefinitions[type as NodeTypes];
+    const nodeInfo = NODE_DEFINITIONS[type as NodeType];
     if (nodeInfo) {
       const id = nanoid();
       const flowNode = createFlowNode(
@@ -272,7 +196,7 @@ const useStore = create<Store>((set, get) => ({
 
     // add all nodes and their graph nodes
     nodes.forEach((node) => {
-      const nodeInfo = nodeDefinitions[node.type as NodeTypes];
+      const nodeInfo = NODE_DEFINITIONS[node.type as NodeType];
       if (nodeInfo) {
         const graphNode = nodeInfo.createGraphNode(node.data);
         set((state) => {
@@ -292,4 +216,9 @@ const useStore = create<Store>((set, get) => ({
   },
 }));
 
-export { useStore, NodeTypes, nodeDefinitions, type Store };
+export {
+  useStore,
+  NodeType as NodeTypes,
+  NODE_DEFINITIONS as nodeDefinitions,
+  type Store,
+};

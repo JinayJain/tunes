@@ -1,10 +1,10 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { NodeBox, NodeBody } from "./util/Node";
+import { NodeBox, NodeBody } from "../util/Node";
 import { useCallback } from "react";
-import useHandle from "./util/useHandle";
-import { useStore } from "../store";
+import useHandle from "../util/useHandle";
+import { useStore } from "../../store";
 import { useShallow } from "zustand/react/shallow";
-import { ButtonGraphNode, ButtonData, ButtonConnection } from "../graph/button";
+import { ButtonGraphNode, ButtonData, ButtonConnection } from "./button";
 import React from "react";
 
 function ButtonNode({ id, selected }: NodeProps<ButtonData>) {

@@ -1,14 +1,14 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { SequencerGraphNode, SequencerData } from "@/graph/sequencer";
-import { NodeBody, NodeBox, NodeTitle } from "./util/Node";
-import useHandle from "./util/useHandle";
-import { ButtonConnection } from "@/graph/button";
+import { NodeBody, NodeBox, NodeTitle } from "../util/Node";
+import useHandle from "../util/useHandle";
 import { useShallow } from "zustand/react/shallow";
-import { useStore } from "../store";
+import { useStore } from "../../store";
 import { useCallback, useState } from "react";
 import { useTimer } from "react-use-precision-timer";
 import clsx from "clsx";
 import React from "react";
+import { ButtonConnection } from "../button/button";
+import { SequencerData, SequencerGraphNode } from "./sequencer";
 
 function SequencerNode({
   id,

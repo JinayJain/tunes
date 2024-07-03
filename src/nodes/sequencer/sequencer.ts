@@ -1,4 +1,4 @@
-import { ButtonGraphNode } from "./button";
+import { ButtonGraphNode } from "../button/button";
 
 export interface SequencerData {
   steps: boolean[];

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./index.css";
 import { DM_Sans } from "next/font/google";
+import { Toaster } from "react-hot-toast";
 
 const sansFont = DM_Sans({
   weight: ["400", "600", "700"],
@@ -22,7 +23,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={sansFont.variable}>
       <body>
-        <div id="root">{children}</div>
+        <div id="root">
+          <Toaster />
+          {children}
+        </div>
       </body>
     </html>
   );

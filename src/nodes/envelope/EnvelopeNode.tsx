@@ -1,14 +1,14 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { NodeBox, NodeBody, NodeTitle } from "./util/Node";
+import { NodeBox, NodeBody, NodeTitle } from "../util/Node";
 import { useCallback } from "react";
-import useHandle from "./util/useHandle";
-import { useStore } from "../store";
+import useHandle from "../util/useHandle";
+import { useStore } from "../../store";
 import { useShallow } from "zustand/react/shallow";
 import {
   EnvelopeGraphNode,
   EnvelopeData,
   EnvelopeConnection,
-} from "../graph/envelope";
+} from "./envelope";
 import React from "react";
 
 function EnvelopeNode({
