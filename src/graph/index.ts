@@ -31,13 +31,16 @@ export type Connectable = Tone.ToneAudioNode | Trigger;
 export const connect = (source: Connectable, target: Connectable) => {
   if (source instanceof Trigger && target instanceof Trigger) {
     source.connect(target);
+    return true;
   } else if (
     source instanceof Tone.ToneAudioNode &&
     target instanceof Tone.ToneAudioNode
   ) {
     source.connect(target);
+    return true;
   } else {
     console.error("Unable to connect", source, target);
+    return false;
   }
 };
 

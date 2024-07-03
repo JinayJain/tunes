@@ -5,7 +5,6 @@ export enum MathOperation {
   Add = "add",
   Subtract = "subtract",
   Multiply = "multiply",
-  Divide = "divide",
 }
 
 export interface MathData {
@@ -26,7 +25,7 @@ export enum MathConnection {
   Output = "output",
 }
 
-export class Math extends GraphNode<MathData> {
+export class MathGraphNode extends GraphNode<MathData> {
   private operand1: Tone.Signal;
   private operand2: Tone.Signal;
   private output: Tone.Signal;

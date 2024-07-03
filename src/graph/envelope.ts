@@ -21,7 +21,7 @@ export enum EnvelopeConnection {
   Trigger = "trigger",
 }
 
-export class Envelope extends GraphNode<EnvelopeData> {
+export class EnvelopeGraphNode extends GraphNode<EnvelopeData> {
   private envelope: Tone.AmplitudeEnvelope;
 
   constructor(data: EnvelopeData) {

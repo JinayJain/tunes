@@ -4,12 +4,13 @@ import { useCallback } from "react";
 import useHandle from "./util/useHandle";
 import { useStore } from "../store";
 import { useShallow } from "zustand/react/shallow";
-import { Button, ButtonData, ButtonConnection } from "../graph/button";
+import { ButtonGraphNode, ButtonData, ButtonConnection } from "../graph/button";
+import React from "react";
 
 function ButtonNode({ id, selected }: NodeProps<ButtonData>) {
   const triggerHandleId = useHandle(id, ButtonConnection.Trigger);
   const graphNode = useStore(
-    useShallow((state) => state.getGraphNode<Button>(id))
+    useShallow((state) => state.getGraphNode<ButtonGraphNode>(id))
   );
 
   const onMouseDown = useCallback(() => {

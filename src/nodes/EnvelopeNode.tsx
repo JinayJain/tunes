@@ -4,7 +4,12 @@ import { useCallback } from "react";
 import useHandle from "./util/useHandle";
 import { useStore } from "../store";
 import { useShallow } from "zustand/react/shallow";
-import { Envelope, EnvelopeData, EnvelopeConnection } from "../graph/envelope";
+import {
+  EnvelopeGraphNode,
+  EnvelopeData,
+  EnvelopeConnection,
+} from "../graph/envelope";
+import React from "react";
 
 function EnvelopeNode({
   id,
@@ -18,7 +23,7 @@ function EnvelopeNode({
     useShallow((state) => state.updateNodeData<EnvelopeData>)
   );
   const graphNode = useStore(
-    useShallow((state) => state.getGraphNode<Envelope>(id))
+    useShallow((state) => state.getGraphNode<EnvelopeGraphNode>(id))
   );
 
   const handleChange =

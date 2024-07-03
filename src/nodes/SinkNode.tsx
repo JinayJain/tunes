@@ -5,6 +5,7 @@ import * as Tone from "tone";
 import { useStore } from "../store";
 import { SinkConnection, SinkData } from "../graph/sink";
 import { useShallow } from "zustand/react/shallow";
+import React from "react";
 
 function SinkNode({ id, selected, data: { volume } }: NodeProps<SinkData>) {
   const destinationHandleId = useHandle(id, SinkConnection.AudioIn);
@@ -38,12 +39,6 @@ function SinkNode({ id, selected, data: { volume } }: NodeProps<SinkData>) {
               {Math.round(Tone.dbToGain(volume) * 100)}%
             </span>
           </div>
-          <button
-            className="mt-2 text-sm border px-2 py-1 hover:bg-gray-100 active:bg-gray-200"
-            onClick={() => Tone.start()}
-          >
-            Enable Audio
-          </button>
         </NodeBody>
       </NodeBox>
     </>

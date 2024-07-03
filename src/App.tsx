@@ -1,3 +1,5 @@
+"use client";
+
 import ReactFlow, {
   Background,
   Controls,
@@ -18,6 +20,8 @@ import OscillatorNode from "./nodes/OscillatorNode";
 import SequencerNode from "./nodes/SequencerNode";
 import LFONode from "./nodes/LFONode";
 import MathNode from "./nodes/MathNode";
+import * as Tone from "tone";
+import React from "react";
 
 const selector = (state: Store) => ({
   nodes: state.rfNodes,
@@ -101,6 +105,11 @@ function App() {
     }
   }, [restoreGraph, setViewport]);
 
+  const onClear = useCallback(() => {
+    restoreGraph([], []);
+    console.log("Graph cleared.");
+  }, [restoreGraph]);
+
   useEffect(() => {
     onRestore();
   }, [onRestore]);
@@ -140,18 +149,25 @@ function App() {
           <Controls />
           <Panel
             position="top-right"
-            className="bg-white rounded-md shadow-lg p-4 border min-w-32"
+            className="border-2 border-rose-600 p-4 rounded-md bg-rose-50"
           >
-            <h1 className="text-lg">Palette</h1>
-            <div className="grid grid-cols-2 gap-2 mt-2">
+            <h1 className="text-xl font-bold">Palette</h1>
+            <div className="grid grid-cols-2 gap-2 mt-4">
               {Object.entries(nodeDefinitions).map(([type, { label }]) => (
                 <Draggable key={type} id={type}>
-                  <div className="bg-gray-200 px-2 py-1 text-md rounded shadow-md">
+                  <div className="bg-rose-600 p-2 rounded-md cursor-move text-white">
                     {label}
                   </div>
                 </Draggable>
               ))}
             </div>
+            <p className="mt-4 text-sm text-gray-700">
+              Can&apos;t hear anything? Click{" "}
+              <button className="underline" onClick={() => Tone.start()}>
+                here
+              </button>{" "}
+              to enable audio.
+            </p>
           </Panel>
           <Panel position="bottom-right">
             <button
@@ -165,6 +181,12 @@ function App() {
               onClick={onRestore}
             >
               Restore
+            </button>
+            <button
+              className="bg-red-200 hover:bg-red-300 active:bg-red-400 px-2 py-1 nodrag ml-2"
+              onClick={onClear}
+            >
+              Clear
             </button>
           </Panel>
         </ReactFlow>

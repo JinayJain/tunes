@@ -14,17 +14,21 @@ import {
 } from "reactflow";
 import { create } from "zustand";
 import { GraphNode, connect, disconnect } from "./graph";
-import { defaultEnvelopeData, Envelope, EnvelopeData } from "./graph/envelope";
+import {
+  defaultEnvelopeData,
+  EnvelopeGraphNode,
+  EnvelopeData,
+} from "./graph/envelope";
 import {
   defaultLfoData,
   defaultOscillatorData,
-  Oscillator,
+  OscillatorGraphNode,
   OscillatorData,
 } from "./graph/oscillator";
-import { defaultSinkData, Sink, SinkData } from "./graph/sink";
-import { Button } from "./graph/button";
-import { Sequencer, defaultSequencerData } from "./graph/sequencer";
-import { Math, MathData, defaultMathData } from "./graph/math";
+import { defaultSinkData, SinkGraphNode, SinkData } from "./graph/sink";
+import { ButtonGraphNode } from "./graph/button";
+import { SequencerGraphNode, defaultSequencerData } from "./graph/sequencer";
+import { MathGraphNode, MathData, defaultMathData } from "./graph/math";
 
 type StoreData = {
   rfNodes: Node[];
@@ -45,12 +49,12 @@ type StoreActions = {
     connection: Connection | Edge,
     action: "connect" | "disconnect"
   ) => void;
-  getGraphNode: <T>(id: string) => T;
+  getGraphNode: <T extends GraphNode<unknown>>(id: string) => T;
   updateNodeData: <T>(id: string, data: Partial<T>) => void;
   restoreGraph: (nodes: Node[], edges: Edge[]) => void;
 };
 
-export type Store = StoreData & StoreActions;
+type Store = StoreData & StoreActions;
 
 const initialNodes: Node[] = [];
 const initialEdges: Edge[] = [];
@@ -65,55 +69,55 @@ enum NodeTypes {
   Math = "math",
 }
 
-export type NodeInfo = {
+type NodeInfo = {
   type: NodeTypes;
   label: string;
   defaultData: unknown;
   createGraphNode: (data: unknown) => GraphNode<unknown>;
 };
 
-export const nodeDefinitions: Record<NodeTypes, NodeInfo> = {
+const nodeDefinitions: Record<NodeTypes, NodeInfo> = {
   [NodeTypes.Oscillator]: {
     type: NodeTypes.Oscillator,
     label: "Oscillator",
     defaultData: defaultOscillatorData,
-    createGraphNode: (data) => new Oscillator(data as OscillatorData),
+    createGraphNode: (data) => new OscillatorGraphNode(data as OscillatorData),
   },
   [NodeTypes.Sink]: {
     type: NodeTypes.Sink,
-    label: "Sink",
+    label: "Speaker",
     defaultData: defaultSinkData,
-    createGraphNode: (data) => new Sink(data as SinkData),
+    createGraphNode: (data) => new SinkGraphNode(data as SinkData),
   },
   [NodeTypes.Envelope]: {
     type: NodeTypes.Envelope,
     label: "Envelope",
     defaultData: defaultEnvelopeData,
-    createGraphNode: (data) => new Envelope(data as EnvelopeData),
+    createGraphNode: (data) => new EnvelopeGraphNode(data as EnvelopeData),
   },
   [NodeTypes.Button]: {
     type: NodeTypes.Button,
     label: "Button",
     defaultData: {},
-    createGraphNode: () => new Button(),
+    createGraphNode: () => new ButtonGraphNode(),
   },
   [NodeTypes.Sequencer]: {
     type: NodeTypes.Sequencer,
     label: "Sequencer",
     defaultData: defaultSequencerData,
-    createGraphNode: () => new Sequencer(),
+    createGraphNode: () => new SequencerGraphNode(),
   },
   [NodeTypes.LFO]: {
     type: NodeTypes.LFO,
     label: "LFO",
     defaultData: defaultLfoData,
-    createGraphNode: (data) => new Oscillator(data as OscillatorData),
+    createGraphNode: (data) => new OscillatorGraphNode(data as OscillatorData),
   },
   [NodeTypes.Math]: {
     type: NodeTypes.Math,
     label: "Math",
     defaultData: defaultMathData,
-    createGraphNode: (data) => new Math(data as MathData),
+    createGraphNode: (data) => new MathGraphNode(data as MathData),
   },
 };
 
@@ -223,10 +227,11 @@ const useStore = create<Store>((set, get) => ({
     }
 
     if (action == "connect") {
-      connect(sourceConnectable, targetConnectable);
-      set({
-        rfEdges: addEdge(connection, get().rfEdges),
-      });
+      if (connect(sourceConnectable, targetConnectable)) {
+        set({
+          rfEdges: addEdge(connection, get().rfEdges),
+        });
+      }
     } else if (action == "disconnect" && "id" in connection) {
       disconnect(sourceConnectable, targetConnectable);
       set({
@@ -287,4 +292,4 @@ const useStore = create<Store>((set, get) => ({
   },
 }));
 
-export { useStore, NodeTypes };
+export { useStore, NodeTypes, nodeDefinitions, type Store };

@@ -1,4 +1,4 @@
-import { Button } from "./button";
+import { ButtonGraphNode } from "./button";
 
 export interface SequencerData {
   steps: boolean[];
@@ -8,4 +8,4 @@ export const defaultSequencerData: SequencerData = {
   steps: Array(16).fill(false),
 };
 
-export class Sequencer extends Button {}
+export class SequencerGraphNode extends ButtonGraphNode {}

@@ -1,5 +1,5 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { Sequencer, SequencerData } from "../graph/sequencer";
+import { SequencerGraphNode, SequencerData } from "../graph/sequencer";
 import { NodeBody, NodeBox, NodeTitle } from "./util/Node";
 import useHandle from "./util/useHandle";
 import { ButtonConnection } from "../graph/button";
@@ -8,6 +8,7 @@ import { useStore } from "../store";
 import { useCallback, useState } from "react";
 import { useTimer } from "react-use-precision-timer";
 import clsx from "clsx";
+import React from "react";
 
 function SequencerNode({
   id,
@@ -20,7 +21,7 @@ function SequencerNode({
     useShallow((state) => state.updateNodeData<SequencerData>)
   );
   const graphNode = useStore(
-    useShallow((state) => state.getGraphNode<Sequencer>(id))
+    useShallow((state) => state.getGraphNode<SequencerGraphNode>(id))
   );
 
   const onTimerTick = useCallback(() => {

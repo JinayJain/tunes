@@ -5,6 +5,7 @@ import { useStore } from "../store";
 import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { OscillatorData, OscillatorConnection } from "../graph/oscillator";
+import React from "react";
 
 function LFONode({
   id,

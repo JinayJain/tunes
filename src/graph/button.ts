@@ -8,7 +8,7 @@ export enum ButtonConnection {
   Trigger = "trigger",
 }
 
-export class Button extends GraphNode<ButtonData> {
+export class ButtonGraphNode extends GraphNode<ButtonData> {
   constructor() {
     super();
 

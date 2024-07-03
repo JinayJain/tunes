@@ -21,7 +21,7 @@ export enum OscillatorConnection {
   Frequency = "frequency",
 }
 
-export class Oscillator extends GraphNode<OscillatorData> {
+export class OscillatorGraphNode extends GraphNode<OscillatorData> {
   private oscillator: Tone.Oscillator;
 
   constructor(data: OscillatorData) {

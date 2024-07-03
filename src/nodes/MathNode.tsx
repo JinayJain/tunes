@@ -5,6 +5,7 @@ import { useStore } from "../store";
 import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { MathData, MathOperation, MathConnection } from "../graph/math";
+import React from "react";
 
 function MathNode({
   id,

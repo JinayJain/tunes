@@ -13,12 +13,13 @@ export enum SinkConnection {
   AudioIn = "audioIn",
 }
 
-export class Sink extends GraphNode<SinkData> {
+export class SinkGraphNode extends GraphNode<SinkData> {
   private destination: Tone.ToneAudioNode;
   private volume: Tone.Volume;
 
   constructor(data: SinkData) {
     super();
+
     this.destination = Tone.getDestination();
     this.volume = new Tone.Volume(data.volume);
     this.volume.connect(this.destination);
