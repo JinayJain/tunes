@@ -10,7 +10,7 @@ const sansFont = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "SoundSketch",
+  title: "soundsketch",
   description:
     "An online modular synthesizer to create and share audio compositions",
 };

@@ -25,6 +25,20 @@ import MathNode from "./math/MathNode";
 import SequencerNode from "./sequencer/SequencerNode";
 import SinkNode from "./sink/SinkNode";
 import OscillatorNode from "./oscillator/OscillatorNode";
+import { NoiseData, NoiseGraphNode, defaultNoiseData } from "./noise/noise";
+import NoiseNode from "./noise/NoiseNode";
+import FilterNode from "./filter/FilterNode";
+import {
+  FilterData,
+  FilterGraphNode,
+  defaultFilterData,
+} from "./filter/filter";
+import ReverbNode from "./reverb/ReverbNode";
+import {
+  ReverbData,
+  ReverbGraphNode,
+  defaultReverbData,
+} from "./reverb/reverb";
 
 export enum NodeType {
   Oscillator = "oscillator",
@@ -34,6 +48,9 @@ export enum NodeType {
   Sequencer = "sequencer",
   LFO = "lfo",
   Math = "math",
+  Noise = "noise",
+  Filter = "filter",
+  Reverb = "reverb",
 }
 
 type NodeInfo = {
@@ -86,6 +103,24 @@ export const NODE_DEFINITIONS: Record<NodeType, NodeInfo> = {
     defaultData: defaultMathData,
     createGraphNode: (data) => new MathGraphNode(data as MathData),
   },
+  [NodeType.Noise]: {
+    type: NodeType.Noise,
+    label: "Noise",
+    defaultData: defaultNoiseData,
+    createGraphNode: (data) => new NoiseGraphNode(data as NoiseData),
+  },
+  [NodeType.Filter]: {
+    type: NodeType.Filter,
+    label: "Filter",
+    defaultData: defaultFilterData,
+    createGraphNode: (data) => new FilterGraphNode(data as FilterData),
+  },
+  [NodeType.Reverb]: {
+    type: NodeType.Reverb,
+    label: "Reverb",
+    defaultData: defaultReverbData,
+    createGraphNode: (data) => new ReverbGraphNode(data as ReverbData),
+  },
 };
 
 export const NODE_TYPES: Record<NodeType, React.ComponentType<NodeProps>> = {
@@ -96,4 +131,7 @@ export const NODE_TYPES: Record<NodeType, React.ComponentType<NodeProps>> = {
   [NodeType.Sequencer]: SequencerNode,
   [NodeType.LFO]: LFONode,
   [NodeType.Math]: MathNode,
+  [NodeType.Noise]: NoiseNode,
+  [NodeType.Filter]: FilterNode,
+  [NodeType.Reverb]: ReverbNode,
 };
