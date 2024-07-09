@@ -1,5 +1,5 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { NodeBody, NodeBox, NodeTitle } from "../util/Node";
+import { Node } from "../util/Node";
 import useHandle from "../util/useHandle";
 import * as Tone from "tone";
 import { useStore } from "../../store";
@@ -7,7 +7,12 @@ import { SinkConnection, SinkData } from "./sink";
 import { useShallow } from "zustand/react/shallow";
 import React from "react";
 
-function SinkNode({ id, selected, data: { volume } }: NodeProps<SinkData>) {
+function SinkNode(props: NodeProps<SinkData>) {
+  const {
+    id,
+    data: { volume },
+  } = props;
+
   const destinationHandleId = useHandle(id, SinkConnection.AudioIn);
   const updateNodeData = useStore(
     useShallow((state) => state.updateNodeData<SinkData>)
@@ -15,12 +20,16 @@ function SinkNode({ id, selected, data: { volume } }: NodeProps<SinkData>) {
 
   return (
     <>
-      <Handle type="target" position={Position.Left} id={destinationHandleId} />
-      <NodeBox selected={selected}>
-        <NodeTitle>Speaker</NodeTitle>
-        <NodeBody>
+      <Node {...props} color="blue">
+        <Node.Handle
+          type="target"
+          position={Position.Left}
+          id={destinationHandleId}
+        />
+        <Node.Title>Speaker</Node.Title>
+        <Node.Body>
           <div className="flex items-center space-x-2">
-            <label>Volume:</label>
+            <label>Volume</label>
             <input
               type="range"
               className="nodrag border"
@@ -39,8 +48,8 @@ function SinkNode({ id, selected, data: { volume } }: NodeProps<SinkData>) {
               {Math.round(Tone.dbToGain(volume) * 100)}%
             </span>
           </div>
-        </NodeBody>
-      </NodeBox>
+        </Node.Body>
+      </Node>
     </>
   );
 }

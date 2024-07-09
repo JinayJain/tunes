@@ -5,8 +5,9 @@ export default {
     extend: {
       fontFamily: {
         sans: ["var(--font-sans)"],
+        mono: ["var(--font-mono)"],
       },
     },
   },
-  plugins: [],
+  plugins: [import("@tailwindcss/forms")],
 };

@@ -6,7 +6,6 @@ import ReactFlow, {
   Panel,
   useReactFlow,
 } from "reactflow";
-import "reactflow/dist/style.css";
 import { useShallow } from "zustand/react/shallow";
 import { useDraggable, DndContext, DragEndEvent } from "@dnd-kit/core";
 import { useCallback, useState } from "react";
@@ -16,6 +15,7 @@ import React from "react";
 import { toast } from "react-hot-toast";
 import { saveCreation } from "./actions";
 import { NODE_TYPES } from "@/nodes";
+import NodePalette from "./NodePalette";
 
 const selector = (state: Store) => ({
   nodes: state.rfNodes,
@@ -30,23 +30,6 @@ const selector = (state: Store) => ({
   modifyEdge: state.modifyEdge,
   restoreGraph: state.restoreGraph,
 });
-
-function Draggable(props: { children: React.ReactNode; id: string }) {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
-    id: props.id,
-  });
-  const style = transform
-    ? {
-        transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-      }
-    : undefined;
-
-  return (
-    <button ref={setNodeRef} style={style} {...listeners} {...attributes}>
-      {props.children}
-    </button>
-  );
-}
 
 function App() {
   const { screenToFlowPosition, toObject, setViewport } = useReactFlow();
@@ -139,26 +122,16 @@ function App() {
           <Background />
           <Controls />
           <Panel
-            position="top-right"
-            className="border-2 border-rose-600 p-4 rounded-md bg-rose-50"
+            position="top-left"
+            className="p-4 bg-white bg-opacity-30 backdrop-filter backdrop-blur-md rounded-lg"
           >
-            <h1 className="text-xl font-bold">Palette</h1>
-            <div className="grid grid-cols-2 gap-2 mt-4">
-              {Object.entries(nodeDefinitions).map(([type, { label }]) => (
-                <Draggable key={type} id={type}>
-                  <div className="bg-rose-600 p-2 rounded-md cursor-move text-white">
-                    {label}
-                  </div>
-                </Draggable>
-              ))}
-            </div>
-            <p className="mt-4 text-sm text-gray-700">
-              Can&apos;t hear anything? Click{" "}
-              <button className="underline" onClick={() => Tone.start()}>
-                here
-              </button>{" "}
-              to enable audio.
-            </p>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-600">
+              ambient forest sounds
+            </h1>
+            <h3 className="text-lg text-gray-400">by John Doe</h3>
+          </Panel>
+          <Panel position="top-right">
+            <NodePalette />
           </Panel>
           <Panel position="bottom-right" className="space-x-2">
             <input

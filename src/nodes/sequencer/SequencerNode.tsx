@@ -1,5 +1,5 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { NodeBody, NodeBox, NodeTitle } from "../util/Node";
+import { Node } from "../util/Node";
 import useHandle from "../util/useHandle";
 import { useShallow } from "zustand/react/shallow";
 import { useStore } from "../../store";
@@ -10,11 +10,12 @@ import React from "react";
 import { ButtonConnection } from "../button/button";
 import { SequencerData, SequencerGraphNode } from "./sequencer";
 
-function SequencerNode({
-  id,
-  selected,
-  data: { steps },
-}: NodeProps<SequencerData>) {
+function SequencerNode(props: NodeProps<SequencerData>) {
+  const {
+    id,
+    data: { steps },
+  } = props;
+
   const triggerHandleId = useHandle(id, ButtonConnection.Trigger);
   const [currentStep, setCurrentStep] = useState(0);
   const updateNodeData = useStore(
@@ -66,10 +67,14 @@ function SequencerNode({
 
   return (
     <>
-      <Handle type="source" position={Position.Right} id={triggerHandleId} />
-      <NodeBox selected={selected}>
-        <NodeTitle>Sequencer</NodeTitle>
-        <NodeBody>
+      <Node {...props} color="green">
+        <Node.Handle
+          type="source"
+          position={Position.Right}
+          id={triggerHandleId}
+        />
+        <Node.Title>Sequencer</Node.Title>
+        <Node.Body>
           <div className="flex space-x-2">
             {steps.map((step, index) => (
               <button
@@ -89,8 +94,8 @@ function SequencerNode({
           >
             {timer.isRunning() ? "Stop" : "Start"}
           </button>
-        </NodeBody>
-      </NodeBox>
+        </Node.Body>
+      </Node>
     </>
   );
 }

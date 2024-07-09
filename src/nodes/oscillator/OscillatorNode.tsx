@@ -1,17 +1,19 @@
-import { Handle, NodeProps, Position } from "reactflow";
-import { NodeBody, NodeBox, NodeTitle } from "../util/Node";
+import { NodeProps, Position } from "reactflow";
+import { Node } from "../util/Node";
 import useHandle from "../util/useHandle";
 import { useStore } from "../../store";
 import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { OscillatorData, OscillatorConnection } from "./oscillator";
 import React from "react";
+import { Dropdown, TextInput } from "@/components/form";
 
-function OscillatorNode({
-  id,
-  selected,
-  data: { frequency, type },
-}: NodeProps<OscillatorData>) {
+function OscillatorNode(props: NodeProps<OscillatorData>) {
+  const {
+    id,
+    data: { frequency, type },
+  } = props;
+
   const outputHandleId = useHandle(id, OscillatorConnection.AudioOut);
   const frequencyHandleId = useHandle(id, OscillatorConnection.Frequency);
   const updateNodeData = useStore(
@@ -37,35 +39,40 @@ function OscillatorNode({
 
   return (
     <>
-      <Handle type="target" position={Position.Left} id={frequencyHandleId} />
-      <NodeBox selected={selected}>
-        <NodeTitle>Oscillator</NodeTitle>
-        <NodeBody>
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
+      <Node.Handle
+        type="target"
+        position={Position.Left}
+        id={frequencyHandleId}
+      />
+      <Node {...props} color="red">
+        <Node.Title>Oscillator</Node.Title>
+        <Node.Body className="max-w-64">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <div className="flex space-x-2 items-center">
+                <p>Frequency</p>
+
+                <TextInput
+                  unit="Hz"
+                  type="number"
+                  value={frequency}
+                  onChange={onFrequencyChange}
+                />
+              </div>
               <input
                 type="range"
-                className="nodrag border flex-1"
+                className="w-full nodrag"
                 value={frequency}
                 onChange={onFrequencyChange}
                 min={20}
                 max={5000}
               />
-
-              <input
-                type="number"
-                className="nodrag border"
-                value={frequency}
-                onChange={onFrequencyChange}
-                min={20}
-                max={5000}
-              />
-              <span>Hz</span>
             </div>
-            <div className="flex items-center space-x-2">
-              <label>Type:</label>
-              <select
-                className="nodrag border flex-1"
+            <div className="flex space-x-2 items-center">
+              <label htmlFor="oscillator-type">Type</label>
+              <Dropdown
+                id="oscillator-type"
+                className="flex-1"
                 value={type}
                 onChange={onTypeChange}
               >
@@ -74,12 +81,16 @@ function OscillatorNode({
                     {type}
                   </option>
                 ))}
-              </select>
+              </Dropdown>
             </div>
           </div>
-        </NodeBody>
-      </NodeBox>
-      <Handle type="source" position={Position.Right} id={outputHandleId} />
+        </Node.Body>
+      </Node>
+      <Node.Handle
+        type="source"
+        position={Position.Right}
+        id={outputHandleId}
+      />
     </>
   );
 }

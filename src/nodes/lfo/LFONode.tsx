@@ -1,5 +1,5 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { NodeBody, NodeBox, NodeTitle } from "../util/Node";
+import { Node } from "../util/Node";
 import useHandle from "../util/useHandle";
 import { useStore } from "../../store";
 import { useCallback } from "react";
@@ -7,11 +7,12 @@ import { useShallow } from "zustand/react/shallow";
 import { OscillatorData, OscillatorConnection } from "../oscillator/oscillator";
 import React from "react";
 
-function LFONode({
-  id,
-  selected,
-  data: { frequency },
-}: NodeProps<OscillatorData>) {
+function LFONode(props: NodeProps<OscillatorData>) {
+  const {
+    id,
+    data: { frequency },
+  } = props;
+
   const outputHandleId = useHandle(id, OscillatorConnection.AudioOut);
   const frequencyHandleId = useHandle(id, OscillatorConnection.Frequency);
   const updateNodeData = useStore(
@@ -30,10 +31,14 @@ function LFONode({
 
   return (
     <>
-      <Handle type="target" position={Position.Left} id={frequencyHandleId} />
-      <NodeBox selected={selected}>
-        <NodeTitle>LFO</NodeTitle>
-        <NodeBody>
+      <Node {...props} color="red">
+        <Node.Handle
+          type="target"
+          position={Position.Left}
+          id={frequencyHandleId}
+        />
+        <Node.Title>LFO</Node.Title>
+        <Node.Body>
           <div className="space-y-2">
             <div className="flex items-center space-x-2">
               <input
@@ -57,9 +62,13 @@ function LFONode({
               <span>Hz</span>
             </div>
           </div>
-        </NodeBody>
-      </NodeBox>
-      <Handle type="source" position={Position.Right} id={outputHandleId} />
+        </Node.Body>
+      </Node>
+      <Node.Handle
+        type="source"
+        position={Position.Right}
+        id={outputHandleId}
+      />
     </>
   );
 }

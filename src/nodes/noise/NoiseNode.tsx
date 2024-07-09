@@ -1,20 +1,26 @@
 import { Handle, NodeProps, Position } from "reactflow";
-import { NodeBody, NodeBox, NodeTitle } from "../util/Node";
+import { Node } from "../util/Node";
 import useHandle from "../util/useHandle";
 import { useStore } from "../../store";
 import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { NoiseData, NoiseConnection } from "./noise";
 import React from "react";
+import clsx from "clsx";
 
-function NoiseNode({ id, selected, data: { type } }: NodeProps<NoiseData>) {
+function NoiseNode(props: NodeProps<NoiseData>) {
+  const {
+    id,
+    data: { type },
+  } = props;
+
   const outputHandleId = useHandle(id, NoiseConnection.Output);
   const updateNodeData = useStore(
     useShallow((state) => state.updateNodeData<NoiseData>)
   );
 
   const onTypeChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       updateNodeData(id, { type: e.target.value as NoiseData["type"] });
     },
     [id, updateNodeData]
@@ -22,28 +28,41 @@ function NoiseNode({ id, selected, data: { type } }: NodeProps<NoiseData>) {
 
   return (
     <>
-      <Handle type="source" position={Position.Right} id={outputHandleId} />
-      <NodeBox selected={selected}>
-        <NodeTitle>Noise</NodeTitle>
-        <NodeBody>
+      <Node {...props} color="red">
+        <Node.Title>noise</Node.Title>
+        <Node.Body>
           <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <label>Type:</label>
-              <select
-                className="nodrag border flex-1"
-                value={type}
-                onChange={onTypeChange}
-              >
-                {["white", "pink", "brown"].map((type) => (
-                  <option key={type} value={type}>
-                    {type}
-                  </option>
-                ))}
-              </select>
+            <div className="flex flex-col space-y-1">
+              {["white", "pink", "brown"].map((noiseType) => (
+                <div
+                  className={clsx(
+                    "space-x-1 flex items-center *:cursor-pointer nodrag",
+                    type === noiseType
+                      ? "text-gray-600"
+                      : "text-gray-400 hover:text-gray-600"
+                  )}
+                >
+                  <input
+                    type="radio"
+                    value={noiseType}
+                    id={noiseType}
+                    onChange={onTypeChange}
+                    checked={type === noiseType}
+                    className="form-radio w-4 h-4"
+                  />
+                  <label htmlFor={noiseType}>{noiseType}</label>
+                </div>
+              ))}
             </div>
           </div>
-        </NodeBody>
-      </NodeBox>
+        </Node.Body>
+      </Node>
+      <Node.Handle
+        type="source"
+        position={Position.Right}
+        id={outputHandleId}
+        className="w-3 h-3 bg-red-500 -right-1.5"
+      />
     </>
   );
 }

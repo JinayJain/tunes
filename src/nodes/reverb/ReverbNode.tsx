@@ -1,17 +1,18 @@
-import { Handle, NodeProps, Position } from "reactflow";
-import { NodeBody, NodeBox, NodeTitle } from "../util/Node";
+import { NodeProps, Position } from "reactflow";
+import { Node } from "../util/Node";
 import useHandle from "../util/useHandle";
 import { useStore } from "../../store";
 import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { ReverbData, ReverbConnection } from "./reverb";
 import React from "react";
+import { TextInput } from "@/components/form";
 
-function ReverbNode({
-  id,
-  selected,
-  data: { decay, preDelay, wet },
-}: NodeProps<ReverbData>) {
+function ReverbNode(props: NodeProps<ReverbData>) {
+  const {
+    id,
+    data: { decay, preDelay, wet },
+  } = props;
   const inputHandleId = useHandle(id, ReverbConnection.Input);
   const outputHandleId = useHandle(id, ReverbConnection.Output);
   const updateNodeData = useStore(
@@ -40,44 +41,48 @@ function ReverbNode({
   );
 
   return (
-    <>
-      <Handle type="target" position={Position.Left} id={inputHandleId} />
-      <Handle type="source" position={Position.Right} id={outputHandleId} />
-      <NodeBox selected={selected}>
-        <NodeTitle>Reverb</NodeTitle>
-        <NodeBody>
-          <div className="space-y-2">
-            <div className="flex items-center space-x-2">
-              <label>Decay:</label>
-              <input
-                type="number"
-                className="nodrag border flex-1"
-                value={decay}
-                onChange={onDecayChange}
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <label>Pre-Delay:</label>
-              <input
-                type="number"
-                className="nodrag border flex-1"
-                value={preDelay}
-                onChange={onPreDelayChange}
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <label>Wet:</label>
-              <input
-                type="number"
-                className="nodrag border flex-1"
-                value={wet}
-                onChange={onWetChange}
-              />
-            </div>
+    <Node {...props} color="yellow">
+      <Node.Handle type="target" position={Position.Left} id={inputHandleId} />
+      <Node.Handle
+        type="source"
+        position={Position.Right}
+        id={outputHandleId}
+      />
+      <Node.Title>Reverb</Node.Title>
+      <Node.Body>
+        <div className="space-y-2">
+          <div className="flex items-center space-x-2">
+            <label>Decay</label>
+            <TextInput
+              type="number"
+              className="nodrag flex-1"
+              value={decay}
+              onChange={onDecayChange}
+              unit="s"
+            />
           </div>
-        </NodeBody>
-      </NodeBox>
-    </>
+          <div className="flex items-center space-x-2">
+            <label>Pre-Delay</label>
+            <TextInput
+              type="number"
+              className="nodrag flex-1"
+              value={preDelay}
+              onChange={onPreDelayChange}
+              unit="s"
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <label>Wet</label>
+            <TextInput
+              type="number"
+              className="nodrag flex-1"
+              value={wet}
+              onChange={onWetChange}
+            />
+          </div>
+        </div>
+      </Node.Body>
+    </Node>
   );
 }
 

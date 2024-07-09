@@ -39,6 +39,11 @@ import {
   ReverbGraphNode,
   defaultReverbData,
 } from "./reverb/reverb";
+import MicrophoneNode from "./microphone/MicrophoneNode";
+import {
+  MicrophoneGraphNode,
+  defaultMicrophoneData,
+} from "./microphone/microphone";
 
 export enum NodeType {
   Oscillator = "oscillator",
@@ -51,6 +56,7 @@ export enum NodeType {
   Noise = "noise",
   Filter = "filter",
   Reverb = "reverb",
+  Microphone = "microphone",
 }
 
 type NodeInfo = {
@@ -121,6 +127,12 @@ export const NODE_DEFINITIONS: Record<NodeType, NodeInfo> = {
     defaultData: defaultReverbData,
     createGraphNode: (data) => new ReverbGraphNode(data as ReverbData),
   },
+  [NodeType.Microphone]: {
+    type: NodeType.Microphone,
+    label: "Microphone",
+    defaultData: defaultMicrophoneData,
+    createGraphNode: () => new MicrophoneGraphNode(),
+  },
 };
 
 export const NODE_TYPES: Record<NodeType, React.ComponentType<NodeProps>> = {
@@ -134,4 +146,5 @@ export const NODE_TYPES: Record<NodeType, React.ComponentType<NodeProps>> = {
   [NodeType.Noise]: NoiseNode,
   [NodeType.Filter]: FilterNode,
   [NodeType.Reverb]: ReverbNode,
+  [NodeType.Microphone]: MicrophoneNode,
 };
