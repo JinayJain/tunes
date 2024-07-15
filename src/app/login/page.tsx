@@ -1,50 +1,28 @@
+import { TextInput } from "@/components/form";
 import { login, signup, logout } from "./actions";
 
 export default function LoginPage() {
   return (
-    <>
-      <form className="flex flex-col space-y-4 p-4 bg-white shadow-md rounded-md container mx-auto max-w-sm">
-        <label htmlFor="email" className="text-gray-700 font-semibold">
-          Email:
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <label htmlFor="password" className="text-gray-700 font-semibold">
-          Password:
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          required
-          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          formAction={login}
-          className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-        >
-          Log in
-        </button>
-        <button
-          formAction={signup}
-          className="p-2 bg-green-500 text-white rounded-md hover:bg-green-600"
-        >
-          Sign up
-        </button>
-      </form>
-      <form>
-        <button
-          formAction={logout}
-          className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-        >
-          Log out
-        </button>
-      </form>
-    </>
+    <div className="flex flex-col items-center justify-center h-screen bg-red-200">
+      <div className="shadow-md bg-white p-8 rounded-lg">
+        <h1 className="text-xl font-bold tracking-tight mb-8 text-center">
+          soundsketch
+        </h1>
+        <form className="space-y-4">
+          <div>
+            <label htmlFor="email">Email</label>
+            <TextInput id="email" />
+          </div>
+
+          <div>
+            <label htmlFor="password">Password</label>
+            <TextInput id="password" type="password" />
+          </div>
+
+          <button>Sign in</button>
+          <button>Create an account</button>
+        </form>
+      </div>
+    </div>
   );
 }

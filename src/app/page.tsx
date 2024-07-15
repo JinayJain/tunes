@@ -8,7 +8,7 @@ function Home() {
         layout="fill"
         objectFit="cover"
         alt=""
-        className="absolute inset-0 z-0 brightness-50 blur-[2px]"
+        className="absolute inset-0 z-0 brightness-[0.2] blur-[2px] pointer-events-none"
       />
       <div className="relative z-10 px-8 py-8 flex flex-col items-center text-center space-y-4 text-white">
         <div className="flex-1">
@@ -16,11 +16,12 @@ function Home() {
             Modular synthesis in your browser
           </h1>
           <p className="mt-2 text-lg md:text-2xl opacity-80">
-            Create and share audio experiences. No installation required.
+            Create and share audio experiences.{" "}
+            <span className="font-semibold">No installation required</span>.
           </p>
 
           <a href="https://forms.gle/pMLumhdsEGCPE7ho7" target="_blank">
-            <button className="mt-8 px-8 py-2 bg-rose-600 text-white rounded-md text-2xl hover:bg-rose-700 active:bg-rose-800">
+            <button className="mt-8 px-8 py-2 bg-rose-600 text-white rounded-md text-2xl hover:bg-rose-700 active:bg-rose-800 font-bold">
               Join waitlist
             </button>
           </a>

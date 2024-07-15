@@ -1,4 +1,4 @@
-import { Handle, NodeProps, Position } from "reactflow";
+import { NodeProps, Position } from "reactflow";
 import { Node } from "../util/Node";
 import useHandle from "../util/useHandle";
 import { useShallow } from "zustand/react/shallow";
@@ -7,8 +7,11 @@ import { useCallback, useState } from "react";
 import { useTimer } from "react-use-precision-timer";
 import clsx from "clsx";
 import React from "react";
-import { ButtonConnection } from "../button/button";
-import { SequencerData, SequencerGraphNode } from "./sequencer";
+import {
+  SequencerConnection,
+  SequencerData,
+  SequencerGraphNode,
+} from "./sequencer";
 
 function SequencerNode(props: NodeProps<SequencerData>) {
   const {
@@ -16,7 +19,8 @@ function SequencerNode(props: NodeProps<SequencerData>) {
     data: { steps },
   } = props;
 
-  const triggerHandleId = useHandle(id, ButtonConnection.Trigger);
+  const triggerInHandleId = useHandle(id, SequencerConnection.TriggerIn);
+  const triggerOutHandleId = useHandle(id, SequencerConnection.TriggerOut);
   const [currentStep, setCurrentStep] = useState(0);
   const updateNodeData = useStore(
     useShallow((state) => state.updateNodeData<SequencerData>)
@@ -66,37 +70,42 @@ function SequencerNode(props: NodeProps<SequencerData>) {
   }, [currentStep, graphNode, steps, timer]);
 
   return (
-    <>
-      <Node {...props} color="green">
-        <Node.Handle
-          type="source"
-          position={Position.Right}
-          id={triggerHandleId}
-        />
-        <Node.Title>Sequencer</Node.Title>
-        <Node.Body>
-          <div className="flex space-x-2">
-            {steps.map((step, index) => (
-              <button
-                key={index}
-                className={clsx(
-                  step ? "bg-gray-800" : "bg-gray-200",
-                  index === currentStep && "border-2 border-teal-500",
-                  "h-8 w-8 rounded-md nodrag"
-                )}
-                onClick={() => onStepClick(index)}
-              ></button>
-            ))}
-          </div>
-          <button
-            onClick={onTimerToggle}
-            className="mt-2 px-2 py-1 text-sm border rounded-md hover:bg-gray-200"
-          >
-            {timer.isRunning() ? "Stop" : "Start"}
-          </button>
-        </Node.Body>
-      </Node>
-    </>
+    <Node {...props} color="green">
+      <Node.Handle
+        type="target"
+        position={Position.Left}
+        id={triggerInHandleId}
+      />
+      <Node.Handle
+        type="source"
+        position={Position.Right}
+        id={triggerOutHandleId}
+      />
+      <Node.Title>Sequencer</Node.Title>
+      <Node.Body>
+        <div className="flex space-x-2">
+          {steps.map((step, index) => (
+            <button
+              key={index}
+              className={clsx(
+                step
+                  ? "bg-gray-800 hover:bg-gray-700"
+                  : "bg-gray-200 hover:bg-gray-300",
+                index === currentStep && "border-2 border-green-500",
+                "h-8 w-8 rounded-md nodrag"
+              )}
+              onClick={() => onStepClick(index)}
+            ></button>
+          ))}
+        </div>
+        <button
+          onClick={onTimerToggle}
+          className="mt-2 px-2 py-1 text-sm border rounded-md hover:bg-gray-200"
+        >
+          {timer.isRunning() ? "Stop" : "Start"}
+        </button>
+      </Node.Body>
+    </Node>
   );
 }
 

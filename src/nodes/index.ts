@@ -44,6 +44,8 @@ import {
   MicrophoneGraphNode,
   defaultMicrophoneData,
 } from "./microphone/microphone";
+import ClockNode from "./clock/ClockNode";
+import { ClockGraphNode, defaultClockData } from "./clock/clock";
 
 export enum NodeType {
   Oscillator = "oscillator",
@@ -57,6 +59,7 @@ export enum NodeType {
   Filter = "filter",
   Reverb = "reverb",
   Microphone = "microphone",
+  Clock = "clock",
 }
 
 type NodeInfo = {
@@ -133,6 +136,12 @@ export const NODE_DEFINITIONS: Record<NodeType, NodeInfo> = {
     defaultData: defaultMicrophoneData,
     createGraphNode: () => new MicrophoneGraphNode(),
   },
+  [NodeType.Clock]: {
+    type: NodeType.Clock,
+    label: "Clock",
+    defaultData: defaultClockData,
+    createGraphNode: () => new ClockGraphNode(),
+  },
 };
 
 export const NODE_TYPES: Record<NodeType, React.ComponentType<NodeProps>> = {
@@ -147,4 +156,5 @@ export const NODE_TYPES: Record<NodeType, React.ComponentType<NodeProps>> = {
   [NodeType.Filter]: FilterNode,
   [NodeType.Reverb]: ReverbNode,
   [NodeType.Microphone]: MicrophoneNode,
+  [NodeType.Clock]: ClockNode,
 };
