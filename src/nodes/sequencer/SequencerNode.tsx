@@ -52,6 +52,7 @@ function SequencerNode(props: NodeProps<SequencerData>) {
           <p className="text-gray-500 mr-2">Clock</p>
           <Node.Handle
             type="target"
+            dataType="trigger"
             position={Position.Left}
             id={triggerInHandleId}
           />
@@ -83,6 +84,7 @@ function SequencerNode(props: NodeProps<SequencerData>) {
           <p className="text-gray-500 text-right">Output</p>
           <Node.Handle
             type="source"
+            dataType="trigger"
             position={Position.Right}
             id={triggerOutHandleId}
           />

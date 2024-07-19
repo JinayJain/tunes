@@ -28,6 +28,7 @@ function ButtonNode(props: NodeProps<ButtonData>) {
       <Node {...props} color="blue" compact>
         <Node.Handle
           type="source"
+          dataType="trigger"
           position={Position.Right}
           id={triggerHandleId}
         />

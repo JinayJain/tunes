@@ -63,6 +63,7 @@ function EnvelopeNode(props: NodeProps<EnvelopeData>) {
         <div className="relative">
           <Node.Handle
             type="target"
+            dataType="trigger"
             position={Position.Left}
             id={triggerHandleId}
           />

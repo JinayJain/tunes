@@ -18,7 +18,7 @@ const monoFont = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "soundsketch",
+  title: "WavePen",
   description:
     "An online modular synthesizer to create and share audio compositions",
 };

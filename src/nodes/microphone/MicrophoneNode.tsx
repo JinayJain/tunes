@@ -5,8 +5,6 @@ import { MicrophoneData, MicrophoneConnection } from "./microphone";
 import React from "react";
 
 function MicrophoneNode(props: NodeProps<MicrophoneData>) {
-  const onEnable = async () => {};
-
   const outputHandleId = useHandle(props.id, MicrophoneConnection.AudioOut);
 
   return (
@@ -21,13 +19,6 @@ function MicrophoneNode(props: NodeProps<MicrophoneData>) {
             id={outputHandleId}
           />
         </div>
-
-        <button
-          onClick={onEnable}
-          className="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 active:bg-red-700"
-        >
-          Enable
-        </button>
       </Node.Body>
     </Node>
   );

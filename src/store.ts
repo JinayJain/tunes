@@ -11,6 +11,7 @@ import {
   addEdge,
   OnNodesDelete,
   OnEdgeUpdateFunc,
+  OnEdgesDelete,
 } from "reactflow";
 import { create } from "zustand";
 import { GraphNode, connect, disconnect } from "./nodes/util/graph";
@@ -29,6 +30,7 @@ type StoreActions = {
   addNode: (type: string, position: XYPosition) => void;
   onEdgesChange: OnEdgesChange;
   onEdgeUpdate: OnEdgeUpdateFunc;
+  onEdgesDelete: OnEdgesDelete;
   onEdgeUpdateStart: () => void;
   onEdgeUpdateEnd: (event: unknown, edge: Edge) => void;
   modifyEdge: (
@@ -103,6 +105,11 @@ const useStore = create<Store>((set, get) => ({
   onEdgesChange: (changes) => {
     set({
       rfEdges: applyEdgeChanges(changes, get().rfEdges),
+    });
+  },
+  onEdgesDelete: (edges) => {
+    edges.forEach((edge) => {
+      get().modifyEdge(edge, "disconnect");
     });
   },
   onEdgeUpdate: (oldEdge, newConnection) => {

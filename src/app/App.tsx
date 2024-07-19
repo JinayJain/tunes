@@ -14,6 +14,7 @@ import React from "react";
 import { NODE_TYPES } from "@/nodes";
 import NodePalette from "./NodePalette";
 import Modal from "@/components/Modal";
+import * as Tone from "tone";
 
 const selector = (state: Store) => ({
   nodes: state.rfNodes,
@@ -21,6 +22,7 @@ const selector = (state: Store) => ({
   onNodesChange: state.onNodesChange,
   onNodesDelete: state.onNodesDelete,
   onEdgesChange: state.onEdgesChange,
+  onEdgesDelete: state.onEdgesDelete,
   onEdgeUpdate: state.onEdgeUpdate,
   onEdgeUpdateStart: state.onEdgeUpdateStart,
   onEdgeUpdateEnd: state.onEdgeUpdateEnd,
@@ -38,6 +40,7 @@ function App() {
     onNodesChange,
     onNodesDelete,
     onEdgesChange,
+    onEdgesDelete,
     onEdgeUpdate,
     onEdgeUpdateEnd,
     onEdgeUpdateStart,
@@ -66,6 +69,11 @@ function App() {
     [addNode, screenToFlowPosition]
   );
 
+  const handleModalClose = useCallback(async () => {
+    setIsModalOpen(false);
+    await Tone.start();
+  }, []);
+
   return (
     <div className="h-screen">
       <DndContext onDragEnd={onDragEnd}>
@@ -79,6 +87,7 @@ function App() {
           onReconnect={onEdgeUpdate}
           onReconnectStart={onEdgeUpdateStart}
           onReconnectEnd={onEdgeUpdateEnd}
+          onEdgesDelete={onEdgesDelete}
           onConnect={(edge) => modifyEdge(edge, "connect")}
           fitView
           proOptions={{
@@ -92,7 +101,7 @@ function App() {
             className="p-4 bg-gray-100 bg-opacity-50 backdrop-filter backdrop-blur-md rounded-lg"
           >
             <h1 className="text-3xl font-bold tracking-tight text-gray-600">
-              soundsketch
+              WavePen
             </h1>
           </Panel>
           <Panel position="top-right">
@@ -137,12 +146,12 @@ function App() {
       </DndContext>
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        className="max-w-xl"
+        onClose={handleModalClose}
+        className="max-w-lg shadow-lg border m-4"
       >
-        <h2 className="text-2xl font-bold mb-4">Welcome to SoundSketch!</h2>
+        <h2 className="text-2xl font-bold mb-4">Welcome to WavePen!</h2>
         <div className="space-y-2 mb-4">
-          <p>SoundSketch is a visual tool for creating audio experiences.</p>
+          <p>WavePen is a visual tool for creating audio experiences.</p>
           <p>
             To get started,{" "}
             <strong>drag and drop nodes from the palette on the right</strong>{" "}
@@ -157,26 +166,26 @@ function App() {
               rel="noreferrer"
               className="text-blue-500 hover:underline"
             >
-              <strong>educational video</strong>
+              <strong>video</strong>
             </a>
             .
           </p>
           <p>
             If you need help, feel free to reach out to{" "}
             <a
-              href="mailto:soundsketch@jinay.dev"
+              href="mailto:wavepen@jinay.dev"
               className="text-blue-500 hover:underline"
             >
-              <strong>soundsketch@jinay.dev</strong>
+              <strong>wavepen@jinay.dev</strong>
             </a>
             .
           </p>
         </div>
         <button
           className="bg-green-600 hover:bg-green-700 active:bg-green-800 px-4 py-2 rounded-md text-white"
-          onClick={() => setIsModalOpen(false)}
+          onClick={handleModalClose}
         >
-          Get Started
+          Try it out!
         </button>
       </Modal>
     </div>

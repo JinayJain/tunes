@@ -5,7 +5,7 @@ export default function LoginPage() {
     <div className="flex flex-col items-center justify-center h-screen bg-red-200">
       <div className="shadow-md bg-white p-8 rounded-lg">
         <h1 className="text-xl font-bold tracking-tight mb-8 text-center">
-          soundsketch
+          WavePen
         </h1>
         <form className="space-y-4">
           <div>

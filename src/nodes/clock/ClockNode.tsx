@@ -57,14 +57,19 @@ function ClockNode(props: NodeProps<ClockData>) {
 
   return (
     <Node {...props} color="red">
-      <Node.Handle
-        type="source"
-        position={Position.Right}
-        id={triggerHandleId}
-      />
       <Node.Title>Clock</Node.Title>
       <Node.Body className="max-w-64">
         <div className="space-y-2">
+          <div className="relative">
+            <Node.Handle
+              type="source"
+              dataType="trigger"
+              position={Position.Right}
+              id={triggerHandleId}
+            />
+
+            <p className="text-gray-500 text-right">Output</p>
+          </div>
           <div className="flex space-x-2 items-center">
             <p>Frequency</p>
 

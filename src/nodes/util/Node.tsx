@@ -90,11 +90,17 @@ function NodeBody({
   );
 }
 
-type NodeHandleProps = React.ComponentProps<typeof Handle>;
+type NodeHandleProps = React.ComponentProps<typeof Handle> & {
+  dataType?: "signal" | "trigger";
+};
 
-function NodeHandle({ className, ...props }: NodeHandleProps) {
+function NodeHandle({
+  className,
+  dataType = "signal",
+  ...props
+}: NodeHandleProps) {
   const { color } = useContext(NodeContext);
-  const { position } = props;
+  const { position, type } = props;
 
   const handleBackgroundColor: Record<NodeColor, string> = {
     red: "bg-red-500",
@@ -102,6 +108,20 @@ function NodeHandle({ className, ...props }: NodeHandleProps) {
     blue: "bg-blue-500",
     green: "bg-green-500",
   };
+
+  const handleBorderColor: Record<NodeColor, string> = {
+    red: "border-red-500",
+    yellow: "border-yellow-500",
+    blue: "border-blue-500",
+    green: "border-green-500",
+  };
+
+  const shapeClass = dataType === "signal" ? "rounded-full" : "rounded-none";
+
+  const handleClass =
+    type === "source"
+      ? `border-none ${handleBackgroundColor[color]}`
+      : `bg-white border ${handleBorderColor[color]}`;
 
   return (
     <Handle
@@ -115,7 +135,8 @@ function NodeHandle({ className, ...props }: NodeHandleProps) {
         className,
         "w-3 h-3 transform -translate-y-1/2",
         position === Position.Left ? "-translate-x-1/2" : "translate-x-1/2",
-        handleBackgroundColor[color]
+        handleClass,
+        shapeClass
       )}
       {...props}
     />
