@@ -7,15 +7,15 @@ import ReactFlow, {
   useReactFlow,
 } from "reactflow";
 import { useShallow } from "zustand/react/shallow";
-import { useDraggable, DndContext, DragEndEvent } from "@dnd-kit/core";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { useCallback, useState } from "react";
-import { Store, nodeDefinitions, useStore } from "../../store";
-import * as Tone from "tone";
+import { Store, useStore } from "../store";
 import React from "react";
 import { toast } from "react-hot-toast";
 import { saveCreation } from "./actions";
 import { NODE_TYPES } from "@/nodes";
 import NodePalette from "./NodePalette";
+import Modal from "@/components/Modal";
 
 const selector = (state: Store) => ({
   nodes: state.rfNodes,
@@ -48,7 +48,7 @@ function App() {
     restoreGraph,
   } = useStore(useShallow(selector));
 
-  const [idField, setIDField] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
   const onDragEnd = useCallback(
     (event: DragEndEvent) => {
@@ -159,8 +159,60 @@ function App() {
               Clear
             </button>
           </Panel> */}
+          <Panel position="bottom-right">
+            <button
+              className="bg-blue-200 hover:bg-blue-300 active:bg-blue-400 px-2 py-1 nodrag rounded-md"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Help
+            </button>
+          </Panel>
         </ReactFlow>
       </DndContext>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        className="max-w-xl"
+      >
+        <h2 className="text-2xl font-bold mb-4">Welcome to SoundSketch!</h2>
+        <div className="space-y-2 mb-4">
+          <p>SoundSketch is a visual tool for creating audio experiences.</p>
+          <p>
+            To get started,{" "}
+            <strong>drag and drop nodes from the palette on the right</strong>{" "}
+            to the canvas. At a minimum, you&apos;ll need a Speaker node to hear
+            what you create.
+          </p>
+          <p>
+            To learn more about modular synthesis, watch this{" "}
+            <a
+              href="https://www.youtube.com/watch?v=cWslSTTkiFU"
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              <strong>educational video</strong>
+            </a>
+            .
+          </p>
+          <p>
+            If you need help, feel free to reach out to{" "}
+            <a
+              href="mailto:soundsketch@jinay.dev"
+              className="text-blue-500 hover:underline"
+            >
+              <strong>soundsketch@jinay.dev</strong>
+            </a>
+            .
+          </p>
+        </div>
+        <button
+          className="bg-green-600 hover:bg-green-700 active:bg-green-800 px-4 py-2 rounded-md text-white"
+          onClick={() => setIsModalOpen(false)}
+        >
+          Get Started
+        </button>
+      </Modal>
     </div>
   );
 }
