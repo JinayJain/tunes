@@ -5,8 +5,7 @@ function Home() {
     <div className="relative min-h-screen flex items-center justify-center">
       <Image
         src="/img/app.png"
-        layout="fill"
-        objectFit="cover"
+        fill
         alt=""
         className="absolute inset-0 z-0 brightness-[0.2] blur-[2px] pointer-events-none"
       />

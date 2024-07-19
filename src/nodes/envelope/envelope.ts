@@ -24,8 +24,8 @@ export enum EnvelopeConnection {
 export class EnvelopeGraphNode extends GraphNode<EnvelopeData> {
   private envelope: Tone.AmplitudeEnvelope;
 
-  constructor(data: EnvelopeData) {
-    super();
+  constructor(id: string, data: EnvelopeData) {
+    super(id);
     this.envelope = new Tone.AmplitudeEnvelope(data);
 
     this.connectables.set(EnvelopeConnection.AudioIn, this.envelope.input);
@@ -48,6 +48,7 @@ export class EnvelopeGraphNode extends GraphNode<EnvelopeData> {
   }
 
   public trigger(on: boolean) {
+    console.log("triggering envelope", on);
     if (on) {
       this.envelope.triggerAttack();
     } else {

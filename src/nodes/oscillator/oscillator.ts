@@ -24,8 +24,8 @@ export enum OscillatorConnection {
 export class OscillatorGraphNode extends GraphNode<OscillatorData> {
   private oscillator: Tone.Oscillator;
 
-  constructor(data: OscillatorData) {
-    super();
+  constructor(id: string, data: OscillatorData) {
+    super(id);
     this.oscillator = new Tone.Oscillator(data.frequency, data.type).start();
 
     this.connectables.set(OscillatorConnection.AudioOut, this.oscillator);

@@ -35,8 +35,8 @@ export class MathGraphNode extends GraphNode<MathData> {
   private subtractor = new Tone.Subtract();
   private multiplier = new Tone.Multiply();
 
-  constructor(data: MathData) {
-    super();
+  constructor(id: string, data: MathData) {
+    super(id);
 
     this.operand1 = new Tone.Signal(data.operand1Value);
     this.operand2 = new Tone.Signal(data.operand2Value);

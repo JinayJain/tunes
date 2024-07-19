@@ -13,8 +13,8 @@ export enum ClockConnection {
 }
 
 export class ClockGraphNode extends GraphNode<ClockData> {
-  constructor() {
-    super();
+  constructor(id: string) {
+    super(id);
 
     this.connectables.set(ClockConnection.Trigger, new Trigger());
   }

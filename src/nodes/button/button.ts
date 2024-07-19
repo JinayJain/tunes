@@ -9,8 +9,8 @@ export enum ButtonConnection {
 }
 
 export class ButtonGraphNode extends GraphNode<ButtonData> {
-  constructor() {
-    super();
+  constructor(id: string) {
+    super(id);
 
     this.connectables.set(ButtonConnection.Trigger, new Trigger());
   }

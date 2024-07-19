@@ -16,8 +16,8 @@ export const defaultNoiseData: NoiseData = {
 export class NoiseGraphNode extends GraphNode<NoiseData> {
   private noise: Tone.Noise;
 
-  constructor(data: NoiseData) {
-    super();
+  constructor(id: string, data: NoiseData) {
+    super(id);
 
     this.noise = new Tone.Noise(data.type);
     this.noise.start();

@@ -15,28 +15,30 @@ function MicrophoneNode(props: NodeProps<MicrophoneData>) {
     useShallow((state) => state.getGraphNode<MicrophoneGraphNode>(props.id))
   );
 
-  const onEnable = async () => {
-    await graphNode.enable();
-  };
+  const onEnable = async () => {};
 
   const outputHandleId = useHandle(props.id, MicrophoneConnection.AudioOut);
 
   return (
     <Node {...props} color="red">
       <Node.Title>Microphone</Node.Title>
-      <Node.Body className="max-w-64">
+      <Node.Body className="max-w-64 space-y-2">
+        <div className="relative flex items-center">
+          <p className="text-gray-500">Output</p>
+          <Node.Handle
+            type="source"
+            position={Position.Right}
+            id={outputHandleId}
+          />
+        </div>
+
         <button
           onClick={onEnable}
-          className="bg-red-500 text-white px-2 py-1 rounded-md"
+          className="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 active:bg-red-700"
         >
           Enable
         </button>
       </Node.Body>
-      <Node.Handle
-        type="source"
-        position={Position.Right}
-        id={outputHandleId}
-      />
     </Node>
   );
 }

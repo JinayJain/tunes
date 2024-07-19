@@ -21,8 +21,8 @@ export const defaultReverbData: ReverbData = {
 export class ReverbGraphNode extends GraphNode<ReverbData> {
   private reverb: Tone.Reverb;
 
-  constructor(data: ReverbData) {
-    super();
+  constructor(id: string, data: ReverbData) {
+    super(id);
 
     this.reverb = new Tone.Reverb({
       decay: data.decay,

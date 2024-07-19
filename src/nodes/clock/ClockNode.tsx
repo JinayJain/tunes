@@ -30,7 +30,7 @@ function ClockNode(props: NodeProps<ClockData>) {
 
   const timer = useTimer(
     {
-      delay: 1 / frequency,
+      delay: (1 / frequency) * 1000,
     },
     onTimerTick
   );

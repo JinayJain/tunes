@@ -123,17 +123,16 @@ function App() {
           <Controls />
           <Panel
             position="top-left"
-            className="p-4 bg-white bg-opacity-30 backdrop-filter backdrop-blur-md rounded-lg"
+            className="p-4 bg-gray-100 bg-opacity-50 backdrop-filter backdrop-blur-md rounded-lg"
           >
             <h1 className="text-3xl font-bold tracking-tight text-gray-600">
-              ambient forest sounds
+              soundsketch
             </h1>
-            <h3 className="text-lg text-gray-400">by John Doe</h3>
           </Panel>
           <Panel position="top-right">
             <NodePalette />
           </Panel>
-          <Panel position="bottom-right" className="space-x-2">
+          {/* <Panel position="bottom-right" className="space-x-2">
             <input
               type="text"
               className="p-2 border rounded-md"
@@ -159,7 +158,7 @@ function App() {
             >
               Clear
             </button>
-          </Panel>
+          </Panel> */}
         </ReactFlow>
       </DndContext>
     </div>

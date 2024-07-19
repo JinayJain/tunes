@@ -88,7 +88,7 @@ const useStore = create<Store>((set, get) => ({
         position,
         nodeInfo.defaultData
       );
-      const graphNode = nodeInfo.createGraphNode(nodeInfo.defaultData);
+      const graphNode = nodeInfo.createGraphNode(id, nodeInfo.defaultData);
 
       set((state) => {
         const newGraphNodes = new Map(state.graphNodes);
@@ -151,6 +151,7 @@ const useStore = create<Store>((set, get) => ({
     }
 
     if (action == "connect") {
+      console.log("connecting", sourceConnectable, targetConnectable);
       if (connect(sourceConnectable, targetConnectable)) {
         set({
           rfEdges: addEdge(connection, get().rfEdges),
@@ -198,7 +199,7 @@ const useStore = create<Store>((set, get) => ({
     nodes.forEach((node) => {
       const nodeInfo = NODE_DEFINITIONS[node.type as NodeType];
       if (nodeInfo) {
-        const graphNode = nodeInfo.createGraphNode(node.data);
+        const graphNode = nodeInfo.createGraphNode(node.id, node.data);
         set((state) => {
           const newGraphNodes = new Map(state.graphNodes);
           newGraphNodes.set(node.id, graphNode);

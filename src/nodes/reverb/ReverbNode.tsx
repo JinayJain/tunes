@@ -42,44 +42,51 @@ function ReverbNode(props: NodeProps<ReverbData>) {
 
   return (
     <Node {...props} color="yellow">
-      <Node.Handle type="target" position={Position.Left} id={inputHandleId} />
-      <Node.Handle
-        type="source"
-        position={Position.Right}
-        id={outputHandleId}
-      />
       <Node.Title>Reverb</Node.Title>
-      <Node.Body>
-        <div className="space-y-2">
-          <div className="flex items-center space-x-2">
-            <label>Decay</label>
-            <TextInput
-              type="number"
-              className="nodrag flex-1"
-              value={decay}
-              onChange={onDecayChange}
-              unit="s"
-            />
-          </div>
-          <div className="flex items-center space-x-2">
-            <label>Pre-Delay</label>
-            <TextInput
-              type="number"
-              className="nodrag flex-1"
-              value={preDelay}
-              onChange={onPreDelayChange}
-              unit="s"
-            />
-          </div>
-          <div className="flex items-center space-x-2">
-            <label>Wet</label>
-            <TextInput
-              type="number"
-              className="nodrag flex-1"
-              value={wet}
-              onChange={onWetChange}
-            />
-          </div>
+      <Node.Body className="space-y-2">
+        <div className="relative flex items-center justify-between">
+          <Node.Handle
+            type="target"
+            position={Position.Left}
+            id={inputHandleId}
+          />
+          <p className="text-gray-500">Input</p>
+          <Node.Handle
+            type="source"
+            position={Position.Right}
+            id={outputHandleId}
+          />
+          <p className="text-gray-500 text-right">Output</p>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <label>Decay</label>
+          <TextInput
+            type="number"
+            className="nodrag flex-1"
+            value={decay}
+            onChange={onDecayChange}
+            unit="s"
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <label>Pre-Delay</label>
+          <TextInput
+            type="number"
+            className="nodrag flex-1"
+            value={preDelay}
+            onChange={onPreDelayChange}
+            unit="s"
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <label>Wet</label>
+          <TextInput
+            type="number"
+            className="nodrag flex-1"
+            value={wet}
+            onChange={onWetChange}
+          />
         </div>
       </Node.Body>
     </Node>

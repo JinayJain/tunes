@@ -1,4 +1,4 @@
-import { Handle, NodeProps, Position } from "reactflow";
+import { NodeProps, Position } from "reactflow";
 import { Node } from "../util/Node";
 import useHandle from "../util/useHandle";
 import { useStore } from "../../store";
@@ -50,22 +50,15 @@ function MathNode(props: NodeProps<MathData>) {
 
   return (
     <Node {...props} color="yellow">
-      <div className="space-y-8">
-        <Node.Handle
-          type="target"
-          position={Position.Left}
-          id={operand1HandleId}
-        />
-        <Node.Handle
-          type="target"
-          position={Position.Left}
-          id={operand2HandleId}
-        />
-      </div>
       <Node.Title>Math</Node.Title>
-      <Node.Body>
+      <Node.Body className="space-y-2">
         <div className="space-y-2">
-          <div className="block">
+          <div className="relative">
+            <Node.Handle
+              type="target"
+              position={Position.Left}
+              id={operand1HandleId}
+            />
             <TextInput
               type="number"
               className="nodrag"
@@ -74,7 +67,12 @@ function MathNode(props: NodeProps<MathData>) {
             />
           </div>
 
-          <div className="block">
+          <div className="relative">
+            <Node.Handle
+              type="target"
+              position={Position.Left}
+              id={operand2HandleId}
+            />
             <TextInput
               type="number"
               className="nodrag"
@@ -83,27 +81,28 @@ function MathNode(props: NodeProps<MathData>) {
             />
           </div>
 
-          <div className="flex items-center space-x-2">
-            <label>Operation</label>
-            <Dropdown
-              className="nodrag border flex-1"
-              value={operation}
-              onChange={onOperationChange}
-            >
-              {Object.values(MathOperation).map((op) => (
-                <option key={op} value={op}>
-                  {op}
-                </option>
-              ))}
-            </Dropdown>
-          </div>
+          <Dropdown
+            className="nodrag border w-full"
+            value={operation}
+            onChange={onOperationChange}
+          >
+            {Object.values(MathOperation).map((op) => (
+              <option key={op} value={op}>
+                {op}
+              </option>
+            ))}
+          </Dropdown>
+        </div>
+
+        <div className="relative">
+          <p className="text-right text-gray-500">Result</p>
+          <Node.Handle
+            type="source"
+            position={Position.Right}
+            id={outputHandleId}
+          />
         </div>
       </Node.Body>
-      <Node.Handle
-        type="source"
-        position={Position.Right}
-        id={outputHandleId}
-      />
     </Node>
   );
 }

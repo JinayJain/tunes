@@ -1,3 +1,5 @@
+"use client";
+
 import { nodeDefinitions } from "@/store";
 import { useDraggable } from "@dnd-kit/core";
 import * as Tone from "tone";
@@ -21,8 +23,11 @@ function Draggable(props: { children: React.ReactNode; id: string }) {
 
 function NodePalette() {
   return (
-    <div className="bg-white shadow-md border p-4 rounded-lg">
-      <h1 className="text-2xl">Palette</h1>
+    <div className="p-4 bg-gray-100 bg-opacity-50 backdrop-filter backdrop-blur-md rounded-lg">
+      <h1 className="text-gray-700 text-lg">Palette</h1>
+      <p className="text-gray-500">
+        Drag and drop a node to add it to the canvas
+      </p>
       <div className="grid grid-cols-2 gap-4 mt-4">
         {Object.entries(nodeDefinitions).map(([type, { label }]) => (
           <Draggable key={type} id={type}>
@@ -32,7 +37,7 @@ function NodePalette() {
           </Draggable>
         ))}
       </div>
-      <p className="mt-4 text-sm text-gray-700">
+      <p className="mt-4 text-sm text-gray-500">
         Can&apos;t hear anything? Click{" "}
         <button className="underline" onClick={() => Tone.start()}>
           here

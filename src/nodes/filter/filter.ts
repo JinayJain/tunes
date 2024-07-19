@@ -21,8 +21,8 @@ export const defaultFilterData: FilterData = {
 export class FilterGraphNode extends GraphNode<FilterData> {
   private filter: Tone.Filter;
 
-  constructor(data: FilterData) {
-    super();
+  constructor(id: string, data: FilterData) {
+    super(id);
 
     this.filter = new Tone.Filter({
       type: data.type,

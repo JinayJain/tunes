@@ -6,6 +6,7 @@ import { useStore } from "../../store";
 import { useShallow } from "zustand/react/shallow";
 import { ButtonGraphNode, ButtonData, ButtonConnection } from "./button";
 import React from "react";
+import { RiDraggable } from "react-icons/ri";
 
 function ButtonNode(props: NodeProps<ButtonData>) {
   const { id } = props;
@@ -24,22 +25,25 @@ function ButtonNode(props: NodeProps<ButtonData>) {
 
   return (
     <>
-      <Node {...props} color="blue">
+      <Node {...props} color="blue" compact>
         <Node.Handle
           type="source"
           position={Position.Right}
           id={triggerHandleId}
         />
-        <Node.Body>
+        <div className="flex items-center">
+          <div className="cursor-move">
+            <RiDraggable />
+          </div>
           <button
-            className="bg-blue-200 hover:bg-blue-300 active:bg-blue-400 px-2 py-1 nodrag"
+            className="bg-blue-500 text-white px-2 py-1 rounded-lg nodrag hover:bg-blue-600 active:bg-blue-700"
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
             onMouseLeave={onMouseUp}
           >
-            Press
+            Button
           </button>
-        </Node.Body>
+        </div>
       </Node>
     </>
   );

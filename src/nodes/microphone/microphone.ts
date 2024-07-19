@@ -12,9 +12,10 @@ export enum MicrophoneConnection {
 export class MicrophoneGraphNode extends GraphNode<MicrophoneData> {
   private microphone: Tone.UserMedia;
 
-  constructor() {
-    super();
-    this.microphone = new Tone.UserMedia().toDestination();
+  constructor(id: string) {
+    super(id);
+    this.microphone = new Tone.UserMedia();
+    this.microphone.open();
 
     this.connectables.set(MicrophoneConnection.AudioOut, this.microphone);
   }
@@ -24,8 +25,4 @@ export class MicrophoneGraphNode extends GraphNode<MicrophoneData> {
   }
 
   public update() {}
-
-  public async enable() {
-    return await this.microphone.open();
-  }
 }

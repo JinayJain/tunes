@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import React, { createContext, useContext } from "react";
-import { Handle, NodeProps } from "reactflow";
+import { Handle, NodeProps, Position } from "reactflow";
 
 type NodeColor = "red" | "yellow" | "blue" | "green";
 
@@ -10,10 +10,13 @@ type NodeContextType = {
 
 const NodeContext = createContext<NodeContextType>({ color: "red" });
 
-function Node({
-  color,
-  ...props
-}: NodeProps & { children?: React.ReactNode; color: NodeColor }) {
+type NodeComponentProps = NodeProps & {
+  children?: React.ReactNode;
+  color: NodeColor;
+  compact?: boolean;
+};
+
+function Node({ color, ...props }: NodeComponentProps) {
   const { children, selected } = props;
 
   const selectedColor: Record<NodeColor, string> = {
@@ -27,7 +30,8 @@ function Node({
     <NodeContext.Provider value={{ color }}>
       <div
         className={clsx(
-          "bg-white shadow-md border rounded-xl overflow-clip min-w-32",
+          "bg-white shadow-md border rounded-xl",
+          !props.compact && "min-w-32",
           selected && selectedColor[color]
         )}
       >
@@ -54,7 +58,7 @@ function NodeTitle({
   return (
     <h1
       className={clsx(
-        "font-mono text-lg px-3 py-1 text-white",
+        "font-mono text-lg px-3 py-1 text-white rounded-t-xl",
         titleBackgroundColor[color],
         className
       )}
@@ -80,17 +84,17 @@ function NodeBody({
   };
 
   return (
-    <div className={clsx(`p-3`, bodyAccentColor[color], className)} {...props}>
+    <div className={clsx("p-4", bodyAccentColor[color], className)} {...props}>
       {children}
     </div>
   );
 }
 
-function NodeHandle({
-  className,
-  ...props
-}: React.ComponentProps<typeof Handle>) {
+type NodeHandleProps = React.ComponentProps<typeof Handle>;
+
+function NodeHandle({ className, ...props }: NodeHandleProps) {
   const { color } = useContext(NodeContext);
+  const { position } = props;
 
   const handleBackgroundColor: Record<NodeColor, string> = {
     red: "bg-red-500",
@@ -101,7 +105,18 @@ function NodeHandle({
 
   return (
     <Handle
-      className={clsx(className, "w-3 h-3", handleBackgroundColor[color])}
+      style={{
+        left: position === Position.Left ? "-1rem" : "auto",
+        right: position === Position.Right ? "-1rem" : "auto",
+        top: "50%",
+        bottom: "auto",
+      }}
+      className={clsx(
+        className,
+        "w-3 h-3 transform -translate-y-1/2",
+        position === Position.Left ? "-translate-x-1/2" : "translate-x-1/2",
+        handleBackgroundColor[color]
+      )}
       {...props}
     />
   );

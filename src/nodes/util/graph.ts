@@ -59,6 +59,11 @@ export const disconnect = (source: Connectable, target: Connectable) => {
 
 export abstract class GraphNode<T> {
   protected connectables: Map<string, Connectable> = new Map();
+  protected id: string;
+
+  constructor(id: string) {
+    this.id = id;
+  }
 
   public abstract dispose(): void;
   public abstract update(data: T): void;

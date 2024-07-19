@@ -17,8 +17,8 @@ export class SinkGraphNode extends GraphNode<SinkData> {
   private destination: Tone.ToneAudioNode;
   private volume: Tone.Volume;
 
-  constructor(data: SinkData) {
-    super();
+  constructor(id: string, data: SinkData) {
+    super(id);
 
     this.destination = Tone.getDestination();
     this.volume = new Tone.Volume(data.volume);
