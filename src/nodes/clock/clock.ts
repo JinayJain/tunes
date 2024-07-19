@@ -20,7 +20,7 @@ export class ClockGraphNode extends GraphNode<ClockData> {
   }
 
   public dispose(): void {}
-  public update(_data: ClockData): void {}
+  public update(): void {}
 
   public trigger(on: boolean) {
     const trigger = this.getConnectable(ClockConnection.Trigger) as Trigger;

@@ -1,4 +1,4 @@
-import { Handle, NodeProps, Position } from "reactflow";
+import { NodeProps, Position } from "reactflow";
 import { Node } from "../util/Node";
 import useHandle from "../util/useHandle";
 import { useStore } from "../../store";

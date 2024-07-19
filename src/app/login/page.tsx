@@ -1,5 +1,4 @@
 import { TextInput } from "@/components/form";
-import { login, signup, logout } from "./actions";
 
 export default function LoginPage() {
   return (

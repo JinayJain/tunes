@@ -7,8 +7,10 @@ export const defaultMixerData: MixerData = {};
 export class MixerGraphNode extends GraphNode<MixerData> {
   constructor(id: string, data: MixerData) {
     super(id);
+
+    data; // TODO: use data
   }
 
   public dispose() {}
-  public update(data: MixerData) {}
+  public update() {}
 }

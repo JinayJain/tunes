@@ -11,8 +11,6 @@ import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import { useCallback, useState } from "react";
 import { Store, useStore } from "../store";
 import React from "react";
-import { toast } from "react-hot-toast";
-import { saveCreation } from "./actions";
 import { NODE_TYPES } from "@/nodes";
 import NodePalette from "./NodePalette";
 import Modal from "@/components/Modal";
@@ -32,7 +30,7 @@ const selector = (state: Store) => ({
 });
 
 function App() {
-  const { screenToFlowPosition, toObject, setViewport } = useReactFlow();
+  const { screenToFlowPosition } = useReactFlow();
 
   const {
     nodes,
@@ -45,7 +43,6 @@ function App() {
     onEdgeUpdateStart,
     addNode,
     modifyEdge,
-    restoreGraph,
   } = useStore(useShallow(selector));
 
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -67,37 +64,6 @@ function App() {
       addNode(type, flowPosition);
     },
     [addNode, screenToFlowPosition]
-  );
-
-  const onSave = useCallback(() => {
-    toast.promise(saveCreation(toObject()), {
-      loading: "Saving...",
-      success: "Saved!",
-      error: "Saving failed.",
-    });
-  }, [toObject]);
-
-  const onClear = useCallback(() => {
-    restoreGraph([], []);
-    console.log("Graph cleared.");
-  }, [restoreGraph]);
-
-  const onLoad = useCallback(
-    async (idToLoad: string) => {
-      const response = await fetch(`/api/creation/${idToLoad}`);
-      if (!response.ok) {
-        toast.error("Failed to load");
-        return;
-      }
-
-      const data = await response.json();
-      const flow = JSON.parse(data.content);
-
-      restoreGraph(flow.nodes, flow.edges);
-      setViewport(flow.viewport);
-      toast.success("Loaded!");
-    },
-    [restoreGraph, setViewport]
   );
 
   return (
