@@ -28,7 +28,12 @@ export class SequencerGraphNode extends GraphNode<SequencerData> {
 
     this.connectables.set(
       SequencerConnection.TriggerIn,
-      new Trigger((on) => on && this.step())
+      new Trigger((on) => {
+        console.log("triggered", on);
+        if (on) {
+          this.step();
+        }
+      })
     );
     this.connectables.set(SequencerConnection.TriggerOut, new Trigger());
   }
@@ -43,7 +48,10 @@ export class SequencerGraphNode extends GraphNode<SequencerData> {
         SequencerConnection.TriggerOut
       ) as Trigger;
 
-      triggerOut.trigger(this.pattern[this.currentStep]);
+      if (this.pattern[this.currentStep]) {
+        triggerOut.trigger(false);
+      }
+
       triggerOut.trigger(this.pattern[data.currentStep]);
 
       this.currentStep = data.currentStep;
