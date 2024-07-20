@@ -4,6 +4,7 @@ import "./index.css";
 import { DM_Sans, DM_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import clsx from "clsx";
+import Script from "next/script";
 
 const sansFont = DM_Sans({
   weight: ["400", "600", "700"],
@@ -30,6 +31,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={clsx(sansFont.variable, monoFont.variable)}>
+      <Script
+        defer
+        data-domain="wavepen.jinay.dev"
+        src="https://stat.lab.jinay.dev/js/script.local.js"
+      ></Script>
       <body>
         <div id="root">
           <Toaster />
