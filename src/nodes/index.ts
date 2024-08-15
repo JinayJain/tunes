@@ -47,6 +47,12 @@ import {
 } from "./microphone/microphone";
 import ClockNode from "./clock/ClockNode";
 import { ClockGraphNode, defaultClockData } from "./clock/clock";
+import {
+  defaultPitchShiftData,
+  PitchShiftData,
+  PitchShiftGraphNode,
+} from "./pitchshift/pitchshift";
+import PitchShiftNode from "./pitchshift/PitchShiftNode";
 
 export enum NodeType {
   Oscillator = "oscillator",
@@ -61,6 +67,7 @@ export enum NodeType {
   Reverb = "reverb",
   Microphone = "microphone",
   Clock = "clock",
+  PitchShift = "pitchshift",
 }
 
 type NodeInfo = {
@@ -147,6 +154,13 @@ export const NODE_DEFINITIONS: Record<NodeType, NodeInfo> = {
     defaultData: defaultClockData,
     createGraphNode: (id) => new ClockGraphNode(id),
   },
+  [NodeType.PitchShift]: {
+    type: NodeType.PitchShift,
+    label: "Pitch Shift",
+    defaultData: defaultPitchShiftData,
+    createGraphNode: (id, data) =>
+      new PitchShiftGraphNode(id, data as PitchShiftData),
+  },
 };
 
 export const NODE_TYPES: Record<NodeType, React.ComponentType<NodeProps>> = {
@@ -162,4 +176,5 @@ export const NODE_TYPES: Record<NodeType, React.ComponentType<NodeProps>> = {
   [NodeType.Reverb]: ReverbNode,
   [NodeType.Microphone]: MicrophoneNode,
   [NodeType.Clock]: ClockNode,
+  [NodeType.PitchShift]: PitchShiftNode,
 };
