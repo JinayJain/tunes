@@ -3,7 +3,7 @@ steps:
     image: woodpeckerci/plugin-kaniko
     settings:
       registry: registry.registry.svc.cluster.local:5000
-      repo: tunes
+      repo: wavepen
       context: .
       dockerfile: Dockerfile
       tags: "${CI_COMMIT_SHA},latest"
