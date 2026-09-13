@@ -1,0 +1,14 @@
+steps:
+  - name: build-and-push
+    image: woodpeckerci/plugin-kaniko
+    settings:
+      registry: registry.registry.svc.cluster.local:5000
+      repo: tunes
+      context: .
+      dockerfile: Dockerfile
+      tags: "${CI_COMMIT_SHA},latest"
+      insecure: true
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: registry_password
