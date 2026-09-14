@@ -6,7 +6,7 @@ steps:
       repo: wavepen
       context: .
       dockerfile: Dockerfile
-      tags: "${CI_COMMIT_SHA},latest"
+      tags: "${CI_COMMIT_SHA},${CI_PIPELINE_NUMBER},latest"
       insecure: true
       username:
         from_secret: registry_username
